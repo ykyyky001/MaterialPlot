@@ -32,7 +32,7 @@ class MainWindow(QMainWindow):
 
     def onGenerate(self):
         ecl = self.myScene.addEllipse(QRectF(0, 0, 200, 100), self.pen, self.brush)
-        text = self.myScene.addText("FatCow", QFont("Arial", 20, 2))
+        text = self.myScene.addText("FatShe, Guaishow, and Ironman", QFont("Arial", 20, 2))
 
         ecl.setPos(QPointF(100, 100))
         text.setPos(QPointF(140, 170))
