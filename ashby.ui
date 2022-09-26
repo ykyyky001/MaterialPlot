@@ -6,8 +6,8 @@
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>1294</width>
-    <height>1031</height>
+    <width>1573</width>
+    <height>1115</height>
    </rect>
   </property>
   <property name="windowTitle">
@@ -114,14 +114,14 @@
       <item row="3" column="1">
        <widget class="QPushButton" name="pushButton_3">
         <property name="text">
-         <string>Add</string>
+         <string>Group Family</string>
         </property>
        </widget>
       </item>
       <item row="3" column="2">
        <widget class="QPushButton" name="pushButton_6">
         <property name="text">
-         <string>Delete</string>
+         <string>Ungroup Family</string>
         </property>
        </widget>
       </item>
@@ -137,7 +137,7 @@
     <rect>
      <x>0</x>
      <y>0</y>
-     <width>1294</width>
+     <width>1573</width>
      <height>21</height>
     </rect>
    </property>
@@ -152,6 +152,11 @@
     <property name="title">
      <string>Edit</string>
     </property>
+    <addaction name="actionAdd_Material"/>
+    <addaction name="actionDelete_Material"/>
+    <addaction name="separator"/>
+    <addaction name="actionGroup_Family"/>
+    <addaction name="actionUngroup_Family"/>
    </widget>
    <widget class="QMenu" name="menuView">
     <property name="title">
@@ -269,6 +274,26 @@
   <action name="actionHelp">
    <property name="text">
     <string>Help</string>
+   </property>
+  </action>
+  <action name="actionAdd_Material">
+   <property name="text">
+    <string>Add Material</string>
+   </property>
+  </action>
+  <action name="actionDelete_Material">
+   <property name="text">
+    <string>Delete Material</string>
+   </property>
+  </action>
+  <action name="actionGroup_Family">
+   <property name="text">
+    <string>Group Family</string>
+   </property>
+  </action>
+  <action name="actionUngroup_Family">
+   <property name="text">
+    <string>Ungroup Family</string>
    </property>
   </action>
  </widget>
