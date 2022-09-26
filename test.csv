@@ -1,4 +1,4 @@
-Name,Param1,Param2_mean,Param2_sd,Param3_mean,Param3_sd
-Iron,1,20,20,400,100
-Iron,2,20,20,380,100
-Copper,3,10,20,200,100
+Name,Param1,Param2_mean,Param2_sd,Param3_mean,Param3_sd,Color_R,Color_G,Color_B
+Iron,1,50,20,400,100,255,0,0
+Steel,2,20,10,800,200,0,255,0
+Copper,3,10,20,200,100,0,0,255

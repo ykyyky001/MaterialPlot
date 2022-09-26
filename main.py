@@ -47,8 +47,13 @@ class MainWindow(QMainWindow):
             elps_y = float(self.currentData[n]["Param3_mean"])
             elps_w = float(self.currentData[n]["Param2_sd"])
             elps_h = float(self.currentData[n]["Param3_sd"])
-            print(elps_x, elps_y, elps_w, elps_h)
-            self.drawEllipse(elps_x, elps_y, elps_w, elps_h)
+            elps_lbl = self.currentData[n]["Name"]
+            color_R = float(self.currentData[n]["Color_R"])
+            color_G = float(self.currentData[n]["Color_G"])
+            color_B = float(self.currentData[n]["Color_B"])
+            brush = QBrush(QColor(color_R, color_G, color_B, 100))
+            print(elps_x, elps_y, elps_w, elps_h, elps_lbl)
+            self.drawEllipse(elps_x, elps_y, elps_w, elps_h, elps_lbl, brush)
             
             #KY: not sure if i should just put the call of elements in the dict into the drawEllipse function...
 
@@ -83,16 +88,16 @@ class MainWindow(QMainWindow):
     def drawLine(self):
         ecl = self.myScene.addLine(0,0,400,400,self.pen)
 
-    def drawEllipse(self, elps_x, elps_y, elps_w, elps_h):
+    def drawEllipse(self, elps_x, elps_y, elps_w, elps_h, elps_lbl, brush):
+       
+        ecl = self.myScene.addEllipse(QRectF(elps_x, elps_y, elps_w, elps_h), self.pen, brush)
+        text = self.myScene.addText(elps_lbl, QFont("Arial", 12, 2))
 
-        ecl = self.myScene.addEllipse(QRectF(elps_x, elps_y, elps_w, elps_h), self.pen, self.brush)
-        text = self.myScene.addText("FatShe, Guaishow, and Ironman", QFont("Arial", 20, 2))
+        #ecl.setPos(QPointF(100, 100))
+        text.setPos(QPointF(elps_x, elps_y))
 
-        ecl.setPos(QPointF(100, 100))
-        text.setPos(QPointF(140, 170))
-
-        ecl.setRotation(45)
-        text.setRotation(45)
+        #ecl.setRotation(45)
+        #text.setRotation(45)
 
 
 if __name__ == '__main__':
