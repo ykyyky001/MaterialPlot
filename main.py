@@ -29,9 +29,12 @@ class MainWindow(QMainWindow):
         # TODO(ky): update button ui names to be consistent with each other.
         # suggest to use function as category, then followed by name.  
         # e.g. Plot_sel_ln, Action_open_cv
-        self.ui.pushButton.clicked.connect(self.onClickGenPropChrt)
+        # KY: done for plotting property chart
+        # KY: what's the difference bettwen clicked and triggered?
+        self.ui.Plot_Prop_Chrt.clicked.connect(self.onClickGenPropChrt)
         self.ui.Plot_sel_ln.clicked.connect(self.onClickPlotSelLn)
         self.ui.actionOpen_CSV.triggered.connect(self.onActionOpenCSV)
+        self.ui.Plot_clear.clicked.connect(self.onActionClear)
 
 #
 # Button functions, called upon UI interactions. 
@@ -39,7 +42,15 @@ class MainWindow(QMainWindow):
 
     def onClickGenPropChrt(self):
         print("Clicked!")
-        self.drawEllipse()
+        for n in range(len(self.currentData)):
+            elps_x = float(self.currentData[n]["Param2_mean"])
+            elps_y = float(self.currentData[n]["Param3_mean"])
+            elps_w = float(self.currentData[n]["Param2_sd"])
+            elps_h = float(self.currentData[n]["Param3_sd"])
+            print(elps_x, elps_y, elps_w, elps_h)
+            self.drawEllipse(elps_x, elps_y, elps_w, elps_h)
+            
+            #KY: not sure if i should just put the call of elements in the dict into the drawEllipse function...
 
     def onClickPlotSelLn(self):
         print("Now the selection line.")
@@ -48,6 +59,10 @@ class MainWindow(QMainWindow):
     def onActionOpenCSV(self):
         print("Ready to input data.")
         self.openCSV()
+
+    def onActionClear(self):
+        print("graph cleared")
+        self.myScene.clear()
 
 # 
 # Internal functions.
@@ -68,9 +83,9 @@ class MainWindow(QMainWindow):
     def drawLine(self):
         ecl = self.myScene.addLine(0,0,400,400,self.pen)
 
-    def drawEllipse(self):
-        self.myScene.clear()
-        ecl = self.myScene.addEllipse(QRectF(0, 0, 200, 100), self.pen, self.brush)
+    def drawEllipse(self, elps_x, elps_y, elps_w, elps_h):
+
+        ecl = self.myScene.addEllipse(QRectF(elps_x, elps_y, elps_w, elps_h), self.pen, self.brush)
         text = self.myScene.addText("FatShe, Guaishow, and Ironman", QFont("Arial", 20, 2))
 
         ecl.setPos(QPointF(100, 100))

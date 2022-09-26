@@ -6,8 +6,8 @@
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>1573</width>
-    <height>1115</height>
+    <width>1654</width>
+    <height>1152</height>
    </rect>
   </property>
   <property name="windowTitle">
@@ -36,37 +36,16 @@
       <item row="5" column="0" colspan="4">
        <widget class="QTreeView" name="treeView"/>
       </item>
-      <item row="8" column="1" colspan="2">
-       <widget class="QPushButton" name="Plot_sel_ln">
-        <property name="text">
-         <string>Plot Selection Lines</string>
-        </property>
-       </widget>
+      <item row="0" column="1">
+       <widget class="QLineEdit" name="lineEdit_3"/>
+      </item>
+      <item row="2" column="1">
+       <widget class="QLineEdit" name="lineEdit"/>
       </item>
       <item row="2" column="0">
        <widget class="QLabel" name="label">
         <property name="text">
          <string>y-axis</string>
-        </property>
-       </widget>
-      </item>
-      <item row="2" column="1">
-       <widget class="QLineEdit" name="lineEdit"/>
-      </item>
-      <item row="8" column="0">
-       <widget class="QPushButton" name="pushButton">
-        <property name="text">
-         <string>Generate Property Chart</string>
-        </property>
-       </widget>
-      </item>
-      <item row="0" column="1">
-       <widget class="QLineEdit" name="lineEdit_3"/>
-      </item>
-      <item row="1" column="0">
-       <widget class="QLabel" name="label_2">
-        <property name="text">
-         <string>x-axis</string>
         </property>
        </widget>
       </item>
@@ -77,6 +56,16 @@
         </property>
        </widget>
       </item>
+      <item row="1" column="1">
+       <widget class="QLineEdit" name="lineEdit_2"/>
+      </item>
+      <item row="1" column="0">
+       <widget class="QLabel" name="label_2">
+        <property name="text">
+         <string>x-axis</string>
+        </property>
+       </widget>
+      </item>
       <item row="0" column="0">
        <widget class="QLabel" name="label_3">
         <property name="text">
@@ -84,11 +73,19 @@
         </property>
        </widget>
       </item>
-      <item row="1" column="1">
-       <widget class="QLineEdit" name="lineEdit_2"/>
+      <item row="3" column="1">
+       <widget class="QPushButton" name="pushButton_3">
+        <property name="text">
+         <string>Group Family</string>
+        </property>
+       </widget>
       </item>
-      <item row="7" column="0" colspan="3">
-       <widget class="QListView" name="listView"/>
+      <item row="3" column="0">
+       <widget class="QLabel" name="label_4">
+        <property name="text">
+         <string>List of Materials</string>
+        </property>
+       </widget>
       </item>
       <item row="6" column="1">
        <widget class="QPushButton" name="pushButton_4">
@@ -104,24 +101,34 @@
         </property>
        </widget>
       </item>
-      <item row="3" column="0">
-       <widget class="QLabel" name="label_4">
-        <property name="text">
-         <string>List of Materials</string>
-        </property>
-       </widget>
-      </item>
-      <item row="3" column="1">
-       <widget class="QPushButton" name="pushButton_3">
-        <property name="text">
-         <string>Group Family</string>
-        </property>
-       </widget>
+      <item row="7" column="0" colspan="3">
+       <widget class="QListView" name="listView"/>
       </item>
       <item row="3" column="2">
        <widget class="QPushButton" name="pushButton_6">
         <property name="text">
          <string>Ungroup Family</string>
+        </property>
+       </widget>
+      </item>
+      <item row="8" column="2" rowspan="2">
+       <widget class="QPushButton" name="Plot_clear">
+        <property name="text">
+         <string>Clear</string>
+        </property>
+       </widget>
+      </item>
+      <item row="8" column="0" colspan="2">
+       <widget class="QPushButton" name="Plot_Prop_Chrt">
+        <property name="text">
+         <string>Generate Property Chart</string>
+        </property>
+       </widget>
+      </item>
+      <item row="9" column="0" colspan="2">
+       <widget class="QPushButton" name="Plot_sel_ln">
+        <property name="text">
+         <string>Plot Selection Lines</string>
         </property>
        </widget>
       </item>
@@ -137,8 +144,8 @@
     <rect>
      <x>0</x>
      <y>0</y>
-     <width>1573</width>
-     <height>21</height>
+     <width>1654</width>
+     <height>26</height>
     </rect>
    </property>
    <widget class="QMenu" name="menuFile">
