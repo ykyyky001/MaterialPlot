@@ -26,11 +26,34 @@ class MainWindow(QMainWindow):
         self.currentData = []
 
     def connectSignals(self):
-        self.ui.pushButton.clicked.connect(self.onClick_Gen_Prop_Chrt)
-        self.ui.Plot_sel_ln.clicked.connect(self.onClick_SelLn)
-        self.ui.actionOpen_CSV.triggered.connect(self.onOpenCSV)
+        # TODO(ky): update button ui names to be consistent with each other.
+        # suggest to use function as category, then followed by name.  
+        # e.g. Plot_sel_ln, Action_open_cv
+        self.ui.pushButton.clicked.connect(self.onClickGenPropChrt)
+        self.ui.Plot_sel_ln.clicked.connect(self.onClickPlotSelLn)
+        self.ui.actionOpen_CSV.triggered.connect(self.onActionOpenCSV)
 
-    def onOpenCSV(self):
+#
+# Button functions, called upon UI interactions. 
+#
+
+    def onClickGenPropChrt(self):
+        print("Clicked!")
+        self.drawEllipse()
+
+    def onClickPlotSelLn(self):
+        print("Now the selection line.")
+        self.drawLine()
+
+    def onActionOpenCSV(self):
+        print("Ready to input data.")
+        self.openCSV()
+
+# 
+# Internal functions.
+# TODO(tn): wrap internal functions to another files when it gets larger.
+# 
+    def openCSV(self):
         filename, _ = QFileDialog.getOpenFileName(self, "Open CSV", filter="CSV Files (*.csv)")
         if filename:
             self.currentData.clear()
@@ -40,11 +63,12 @@ class MainWindow(QMainWindow):
                     self.currentData.append(row)
             print(self.currentData)
 
-    def onClick_Gen_Prop_Chrt(self):
-        print("clicked!")
-        self.onGenerate()
+    # TODO(team): make internal functions have general APIs that can be called by different
+    # button functions.
+    def drawLine(self):
+        ecl = self.myScene.addLine(0,0,400,400,self.pen)
 
-    def onGenerate(self):
+    def drawEllipse(self):
         self.myScene.clear()
         ecl = self.myScene.addEllipse(QRectF(0, 0, 200, 100), self.pen, self.brush)
         text = self.myScene.addText("FatShe, Guaishow, and Ironman", QFont("Arial", 20, 2))
@@ -54,13 +78,6 @@ class MainWindow(QMainWindow):
 
         ecl.setRotation(45)
         text.setRotation(45)
-
-    def onClick_SelLn(self):
-        print("now the selection line")
-        self.onGenerate_SelLn()
-
-    def onGenerate_SelLn(self):
-        ecl = self.myScene.addLine(0,0,400,400,self.pen)
 
 
 if __name__ == '__main__':
