@@ -24,13 +24,15 @@ class MainWindow(QMainWindow):
         self.brush2 = QBrush(QColor(100,100,0, 100))
 
     def connectSignals(self):
-        self.ui.pushButton.clicked.connect(self.onClick)
+        self.ui.pushButton.clicked.connect(self.onClick_Gen_Prop_Chrt)
+        self.ui.Plot_sel_ln.clicked.connet(self.onClick_SelLn)
 
-    def onClick(self):
+    def onClick_Gen_Prop_Chrt(self):
         print("clicked!")
         self.onGenerate()
 
     def onGenerate(self):
+        self.myScene.clear
         ecl = self.myScene.addEllipse(QRectF(0, 0, 200, 100), self.pen, self.brush)
         text = self.myScene.addText("FatShe, Guaishow, and Ironman", QFont("Arial", 20, 2))
 
@@ -40,6 +42,13 @@ class MainWindow(QMainWindow):
         ecl.setRotation(45)
         text.setRotation(45)
 
+    def onClick_SelLn(self):
+        print("now the selection line")
+        self.onGenerate_SelLn
+
+    def onGenerate_SelLn(self):
+        ecl = self.myScene.addLine(0,0,400,400,self.pen)
+        
 
 if __name__ == '__main__':
     app = QApplication(sys.argv)
