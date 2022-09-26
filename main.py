@@ -45,7 +45,7 @@ class MainWindow(QMainWindow):
         self.onGenerate()
 
     def onGenerate(self):
-        self.myScene.clear
+        self.myScene.clear()
         ecl = self.myScene.addEllipse(QRectF(0, 0, 200, 100), self.pen, self.brush)
         text = self.myScene.addText("FatShe, Guaishow, and Ironman", QFont("Arial", 20, 2))
 
@@ -57,7 +57,7 @@ class MainWindow(QMainWindow):
 
     def onClick_SelLn(self):
         print("now the selection line")
-        self.onGenerate_SelLn
+        self.onGenerate_SelLn()
 
     def onGenerate_SelLn(self):
         ecl = self.myScene.addLine(0,0,400,400,self.pen)
