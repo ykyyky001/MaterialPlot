@@ -1,7 +1,7 @@
 import sys
 from PySide2.QtCore import QFile, QRectF, QPointF
 from PySide2.QtUiTools import QUiLoader
-from PySide2.QtWidgets import QApplication, QMainWindow, QGraphicsScene, QFileDialog
+from PySide2.QtWidgets import QApplication, QMainWindow, QGraphicsScene, QFileDialog, QTreeView
 from PySide2.QtGui import QBrush, QPen, QColor, QFont
 import csv
 
