@@ -25,7 +25,7 @@ class MainWindow(QMainWindow):
 
     def connectSignals(self):
         self.ui.pushButton.clicked.connect(self.onClick_Gen_Prop_Chrt)
-        self.ui.Plot_sel_ln.clicked.connet(self.onClick_SelLn)
+        self.ui.Plot_sel_ln.clicked.connect(self.onClick_SelLn)
 
     def onClick_Gen_Prop_Chrt(self):
         print("clicked!")
