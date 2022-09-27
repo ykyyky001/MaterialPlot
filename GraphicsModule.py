@@ -13,6 +13,9 @@ class AshbyGraphicsController(object):
         self.model = AshbyModel(current_data)
         self.graphicItems = [] # not necessary at present, for further use
 
+    #
+    # Public
+    #
     def clearScene(self):
         self.scene.clear()
         self.graphicItems.clear() # not necessary at present, for further use
@@ -21,6 +24,9 @@ class AshbyGraphicsController(object):
         for name, info in self.model.getAllItems().items():
             self.drawEllipse(info)
 
+    #
+    # Private
+    #
     def drawEllipse(self, mat_item: MaterialItem):
         brush = QBrush(QColor(mat_item.color_r, mat_item.color_g, mat_item.color_b, a = 255))
         elps = self.scene.addEllipse(QRectF(mat_item.x, mat_item.y, mat_item.w, mat_item.h), self.pen, brush)
@@ -42,6 +48,9 @@ class AshbyGraphicsController(object):
 
             self.graphicItems.append(graphicitem)	# not necessary at present, for further use
             self.graphicItems.append(graphicitem2)	# not necessary at present, for further use
+    def drawRegressionLine(self):
+        #TODO(tienan): implement this.
+        pass
 
     def drawHull(self):
         hull_v = ellipseHull(list(self.model.getAllItems().values()) , 2, 200) # expand ratio = 2, step = 200

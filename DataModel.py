@@ -36,7 +36,7 @@ class AshbyModel(object):
 		self.initFromData(data)
 
 	def initFromData(self, data: list):
-		# TODO(team): adopt to the case when multiple lines in raw data could be one single item.
+		# TODO(tienan): adopt to the case when multiple lines in raw data could be one single item.
 		for item in data:
 			try:
 				matitem = MaterialItem(item)
