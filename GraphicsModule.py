@@ -22,7 +22,7 @@ class AshbyGraphicsController(object):
             self.drawEllipse(info)
 
     def drawEllipse(self, mat_item: MaterialItem):
-        brush = QBrush(QColor(mat_item.color_r, mat_item.color_g, mat_item.color_b, a = 100))
+        brush = QBrush(QColor(mat_item.color_r, mat_item.color_g, mat_item.color_b, a = 255))
         elps = self.scene.addEllipse(QRectF(mat_item.x, mat_item.y, mat_item.w, mat_item.h), self.pen, brush)
         text = self.scene.addText(mat_item.label, QFont("Arial", 12, 2))
         text.setPos(QPointF(mat_item.x, mat_item.y))
@@ -44,6 +44,8 @@ class AshbyGraphicsController(object):
             self.graphicItems.append(graphicitem2)	# not necessary at present, for further use
 
     def drawHull(self):
-        hull_v = ellipseHull(list(self.model.getAllItems().values()))
+        hull_v = ellipseHull(list(self.model.getAllItems().values()) , 2, 200) # expand ratio = 2, step = 200
         polygon = QPolygonF(list(map(QPointF, *hull_v.T)))
-        self.scene.addPolygon(polygon)
+        self.pen = QPen(QColor(125, 125, 125, 50))
+        self.brush = QBrush(QColor(125, 125, 125, 50))
+        self.scene.addPolygon(polygon, self.pen, self.brush)
