@@ -1,3 +1,4 @@
+# -*- coding:utf-8 -*-
 import sys
 from PySide2.QtCore import QFile, QRectF, QPointF
 from PySide2.QtUiTools import QUiLoader
@@ -6,6 +7,7 @@ from PySide2.QtGui import QBrush, QPen, QColor, QFont
 import csv
 from GraphicsModule import AshbyGraphicsController
 from DataModel import AshbyModel
+
 
 class MainWindow(QMainWindow):
     def __init__(self):

@@ -1,3 +1,6 @@
+# -*- coding:utf-8 -*-
+
+
 class MaterialItem(object):
 	"""
 	Use it to describe your Material
@@ -24,6 +27,7 @@ class MaterialItem(object):
 			  "x ", self.x, ", y ", self.y,
 			  ", w ", self.w, ", h ", self.h,
 			  ", rotation ", self.rotation)
+
 
 class AshbyModel(object):
 	def __init__(self, data: list):
