@@ -5,24 +5,7 @@ from PySide2.QtWidgets import QApplication, QMainWindow, QGraphicsScene, QFileDi
 from PySide2.QtGui import QBrush, QPen, QColor, QFont
 import csv
 from GraphicsModule import AshbyGraphicsController
-from DataModel import AshbyModel
-
-class simpleEclipse():
-    def __init__(self, x, y, w, h, label, rotation = None):
-        self.x = x
-        self.y = y
-        self.w = w
-        self.h = h
-        self.rotation = rotation
-        self.label = label
-        self.printDebugString()
-
-    def printDebugString(self):
-        print(self.label, ": ",
-              "x ", self.x, ", y ", self.y,
-              ", w ", self.w, ", h ", self.h,
-              ", rotation ", self.rotation)
-
+from DataModel import AshbyModel, MaterialItem
 
 class MainWindow(QMainWindow):
     def __init__(self):
@@ -43,7 +26,6 @@ class MainWindow(QMainWindow):
 
         self.pen = QPen(QColor(0,0,0))
 
-
     def connectSignals(self):
         self.ui.Plot_Prop_Chrt.clicked.connect(self.onClickGenPropChrt)
         self.ui.Plot_sel_ln.clicked.connect(self.onClickPlotSelLn)
@@ -56,46 +38,41 @@ class MainWindow(QMainWindow):
 # Button and menu functions, called upon UI interactions.
 #
 
-    def onClickGenPropChrt(self):
-        print("Clicked!")
-        for raw_data in self.currentData:
-            # TODO(team): make better naming for the csv columns.
-            eclipse_info = simpleEclipse(x = float(raw_data["Param2_mean"]),
-                                         y = float(raw_data["Param3_mean"]),
-                                         w = float(raw_data["Param2_sd"]),
-                                         h = float(raw_data["Param3_sd"]),
-                                         label = raw_data["Name"])
-            brush = QBrush(QColor(int(raw_data["Color_R"]),
-                                  int(raw_data["Color_G"]),
-                                  int(raw_data["Color_B"]),
-                                  a = 100))
-            self.drawEllipse(eclipse_info, brush)
-
-
-    def onClickPlotSelLn(self):
-        print("Now the selection line.")
-        self.controller.drawLine()
-
-    def onActionOpenCSV(self):
-        print("Ready to input data.")
-        self.openCSV()
-        self.model.initFromData(self.currentData)
-
-    def onActionClear(self):
-        print("Graph cleared.")
-        self.controller.clearScene()
-
     def onActionHotReload(self):
         from HotReloadModule import reloadModules
         reloadModules()
         from GraphicsModule import AshbyGraphicsController
         self.controller = AshbyGraphicsController(self.myScene, self.model)
 
-# 
+    def onClickGenPropChrt(self):
+        '''
+        Draws all existing materials in our model onto the plot.
+        '''
+        print("Clicked!")
+        for name, info in self.model.getAllItems().items():
+            self.drawEllipse(info)
+
+    def onActionOpenCSV(self):
+        '''
+        Loads data, updates both the model and controller.
+        '''
+        print("Ready to input data.")
+        self.loadDataFromCSV()
+        self.model.initFromData(self.currentData)
+        self.controller = AshbyGraphicsController(self.myScene, self.model)
+
+    def onClickPlotSelLn(self):
+        print("Now the selection line.")
+        self.controller.drawLine()
+
+    def onActionClear(self):
+        print("Graph cleared.")
+        self.controller.clearScene()
+
+#
 # Internal functions.
-# TODO(tn): wrap internal functions to another files when it gets larger.
-# 
-    def openCSV(self):
+#
+    def loadDataFromCSV(self):
         filename, _ = QFileDialog.getOpenFileName(self, "Open CSV", filter="CSV Files (*.csv)")
         if filename:
             self.currentData.clear()
@@ -109,7 +86,8 @@ class MainWindow(QMainWindow):
         line = self.myScene.addLine(0,0,400,400,self.pen)
 
 
-    def drawEllipse(self, elps: simpleEclipse, brush: QBrush):
+    def drawEllipse(self, elps: MaterialItem):
+        brush = QBrush(QColor(elps.color_r, elps.color_g, elps.color_b, a = 100))
         elps_draw = self.myScene.addEllipse(QRectF(elps.x, elps.y, elps.w, elps.h), self.pen, brush)
         text = self.myScene.addText(elps.label, QFont("Arial", 12, 2))
         text.setPos(QPointF(elps.x, elps.y))

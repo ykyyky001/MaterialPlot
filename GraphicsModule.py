@@ -1,8 +1,3 @@
-# -*- coding:utf-8 -*-
-# @ModuleName: GraphicsModule
-# @Description: 
-# @Author: laoweimin@corp.netease.com
-# @Time: 2022/9/27 9:44
 from PySide2.QtWidgets import QGraphicsScene
 from PySide2.QtGui import QBrush, QPen, QColor, QFont
 from DataModel import AshbyModel
@@ -12,7 +7,6 @@ class AshbyGraphicsController(object):
     def __init__(self, scene: QGraphicsScene, model: AshbyModel):
         self.scene = scene
         self.pen = QPen(QColor(0,0,0))
-        self.brush = QBrush(QColor(100,0,0, 100))
         self.model = model
         self.graphicItems = [] # not necessary at present, for further use
 

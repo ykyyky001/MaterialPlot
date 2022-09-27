@@ -1,58 +1,52 @@
-# -*- coding:utf-8 -*-
-# @ModuleName: DataModel
-# @Description: 
-# @Author: laoweimin@corp.netease.com
-# @Time: 2022/9/27 10:00
-
-
 class MaterialItem(object):
 	"""
 	Use it to describe your Material
 	"""
-	def __init__(self, data):
-		self.family = ""
-		self.youngs = 0
-		self.params = {}
-		self.initFromData(data)
+	def __init__(self, data: dict):
+		# TODO(team): update the names for their real meanings.
+		self.x = float(data["Param2_mean"])
+		self.y = float(data["Param3_mean"])
+		self.w = float(data["Param2_sd"])
+		self.h = float(data["Param3_sd"])
+		self.label = data["Name"]
+		self.color_r = int(data["Color_R"])
+		self.color_g = int(data["Color_G"])
+		self.color_b = int(data["Color_B"])
+		#TODO(team): make sure the CSV column is consistent with this.
+		if "rotation" in data.keys():
+			self.rotation = data["rotation"]
+		else:
+			self.rotation = 0.0
+		self.printDebugString()
 
-	def getMean(self, paramname: str):
-		# a fake example
-		for key, value in self.params.items():
-			if key.startswith(paramname) and key.endswith("_mean"):
-				return float(value)
-		return 0
-
-	def getStd(self, paramname: str):
-		# a fake example
-		for key, value in self.params.items():
-			if key.startswith(paramname) and key.endswith("_sd"):
-				return float(value)
-		return 0
-
-	def initFromData(self, data: dict):
-		"""
-		todo: data processing
-		:param data:
-		:return:
-		"""
-		self.params = data
-
+	def printDebugString(self):
+		print("Load ", self.label, ": ",
+			  "x ", self.x, ", y ", self.y,
+			  ", w ", self.w, ", h ", self.h,
+			  ", rotation ", self.rotation)
 
 class AshbyModel(object):
 	def __init__(self, data: list):
-		self._data = data
-		self._items = []
+		self.data = data
+		self.items = {}
 		self.initFromData(data)
 
 	def initFromData(self, data: list):
-		# fake example, multiple lines in raw data could be one single item
+		# TODO(team): adopt to the case when multiple lines in raw data could be one single item.
 		for item in data:
 			matitem = MaterialItem(item)
-			self._items.append(matitem)
+			self.items[matitem.label] = matitem
 
-	def getItem(self, index):
-		return self._items[index]
+	def getAllItems(self):
+		return self.items
+
+	def getItem(self, label):
+		if label in self.items.keys():
+			return self.items[label]
+		# else:
+		# 	print("Do not have info about this material.")
+		# 	return None
 
 	def getCount(self):
-		return len(self._items)
+		return len(self.items)
 
