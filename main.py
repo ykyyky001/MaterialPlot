@@ -6,7 +6,6 @@ from PySide2.QtWidgets import QApplication, QMainWindow, QGraphicsScene, QFileDi
 from PySide2.QtGui import QBrush, QPen, QColor, QFont
 import csv
 from GraphicsModule import AshbyGraphicsController
-from DataModel import AshbyModel
 from View.AGraphicsView import AGraphicsView
 
 
@@ -25,8 +24,7 @@ class MainWindow(QMainWindow):
         self.currentData = []
         self.myScene = QGraphicsScene()
         self.ui.graphicsView.setScene(self.myScene)
-        self.model = AshbyModel(self.currentData)
-        self.controller = AshbyGraphicsController(self.myScene, self.model)
+        self.controller = AshbyGraphicsController(self.myScene, self.currentData)
 
         self.pen = QPen(QColor(0,0,0))
         self.ui.graphicsView.resetView()
@@ -55,10 +53,8 @@ class MainWindow(QMainWindow):
         '''
         from HotReloadModule import reloadModules
         reloadModules()
-        from DataModel import AshbyModel
         from GraphicsModule import AshbyGraphicsController
-        self.model = AshbyModel(self.currentData)
-        self.controller = AshbyGraphicsController(self.myScene, self.model)
+        self.controller = AshbyGraphicsController(self.myScene, self.currentData)
 
     def onClickGenPropChrt(self):
         '''
@@ -73,8 +69,7 @@ class MainWindow(QMainWindow):
         '''
         print("Ready to input data.")
         self.loadDataFromCSV()
-        self.model.initFromData(self.currentData)
-        self.controller = AshbyGraphicsController(self.myScene, self.model)
+        self.controller = AshbyGraphicsController(self.myScene, self.currentData)
 
     def onClickPlotSelLn(self):
         self.controller.drawLine()

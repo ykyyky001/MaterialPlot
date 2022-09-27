@@ -7,10 +7,10 @@ from DataModel import AshbyModel, MaterialItem
 from AlgorithmUtils import ellipseHull
 
 class AshbyGraphicsController(object):
-    def __init__(self, scene: QGraphicsScene, model: AshbyModel):
+    def __init__(self, scene: QGraphicsScene, current_data: list):
         self.scene = scene
         self.pen = QPen(QColor(0,0,0))
-        self.model = model
+        self.model = AshbyModel(current_data)
         self.graphicItems = [] # not necessary at present, for further use
 
     def clearScene(self):
