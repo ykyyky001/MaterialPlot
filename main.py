@@ -4,6 +4,8 @@ from PySide2.QtUiTools import QUiLoader
 from PySide2.QtWidgets import QApplication, QMainWindow, QGraphicsScene, QFileDialog, QTreeView
 from PySide2.QtGui import QBrush, QPen, QColor, QFont
 import csv
+from GraphicsModule import AshbyGraphicsController
+from DataModel import AshbyModel
 
 
 class MainWindow(QMainWindow):
@@ -17,13 +19,15 @@ class MainWindow(QMainWindow):
         self.connectSignals()
         self.ui.show()
 
+        self.currentData = []
         self.myScene = QGraphicsScene()
         self.ui.graphicsView.setScene(self.myScene)
+        self.model = AshbyModel(self.currentData)
+        self.controller = AshbyGraphicsController(self.myScene, self.model)
 
         self.pen = QPen(QColor(0,0,0))
         self.brush = QBrush(QColor(100,0,0, 100))
         self.brush2 = QBrush(QColor(100,100,0, 100))
-        self.currentData = []
 
     def connectSignals(self):
         # TODO(ky): update button ui names to be consistent with each other.
@@ -35,6 +39,7 @@ class MainWindow(QMainWindow):
         self.ui.Plot_sel_ln.clicked.connect(self.onClickPlotSelLn)
         self.ui.actionOpen_CSV.triggered.connect(self.onActionOpenCSV)
         self.ui.Plot_clear.clicked.connect(self.onActionClear)
+        self.ui.actionHotReload.triggered.connect(self.onActionHotReload)
 
 #
 # Button functions, called upon UI interactions. 
@@ -59,15 +64,22 @@ class MainWindow(QMainWindow):
 
     def onClickPlotSelLn(self):
         print("Now the selection line.")
-        self.drawLine()
+        self.controller.drawLine()
 
     def onActionOpenCSV(self):
         print("Ready to input data.")
         self.openCSV()
+        self.model.initFromData(self.currentData)
 
     def onActionClear(self):
         print("graph cleared")
-        self.myScene.clear()
+        self.controller.clearScene()
+
+    def onActionHotReload(self):
+        from HotReloadModule import reloadModules
+        reloadModules()
+        from GraphicsModule import AshbyGraphicsController
+        self.controller = AshbyGraphicsController(self.myScene, self.model)
 
 # 
 # Internal functions.
@@ -87,6 +99,7 @@ class MainWindow(QMainWindow):
     # button functions.
     def drawLine(self):
         ecl = self.myScene.addLine(0,0,400,400,self.pen)
+
 
     def drawEllipse(self, elps_x, elps_y, elps_w, elps_h, elps_lbl, brush):
        

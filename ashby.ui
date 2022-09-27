@@ -145,7 +145,7 @@
      <x>0</x>
      <y>0</y>
      <width>1654</width>
-     <height>26</height>
+     <height>23</height>
     </rect>
    </property>
    <widget class="QMenu" name="menuFile">
@@ -227,6 +227,7 @@
    <addaction name="actionChart"/>
    <addaction name="actionSolver"/>
    <addaction name="actionSynthesizer"/>
+   <addaction name="actionHotReload"/>
   </widget>
   <action name="actionOpen_CSV">
    <property name="text">
@@ -301,6 +302,17 @@
   <action name="actionUngroup_Family">
    <property name="text">
     <string>Ungroup Family</string>
+   </property>
+  </action>
+  <action name="actionHotReload">
+   <property name="text">
+    <string>HotReload</string>
+   </property>
+   <property name="toolTip">
+    <string>Hot reload your code</string>
+   </property>
+   <property name="shortcut">
+    <string>F5</string>
    </property>
   </action>
  </widget>
