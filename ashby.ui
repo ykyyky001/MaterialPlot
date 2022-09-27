@@ -145,7 +145,7 @@
      <x>0</x>
      <y>0</y>
      <width>1654</width>
-     <height>23</height>
+     <height>22</height>
     </rect>
    </property>
    <widget class="QMenu" name="menuFile">
@@ -228,6 +228,7 @@
    <addaction name="actionSolver"/>
    <addaction name="actionSynthesizer"/>
    <addaction name="actionHotReload"/>
+   <addaction name="actionConvexHull"/>
   </widget>
   <action name="actionOpen_CSV">
    <property name="text">
@@ -313,6 +314,11 @@
    </property>
    <property name="shortcut">
     <string>F5</string>
+   </property>
+  </action>
+  <action name="actionConvexHull">
+   <property name="text">
+    <string>ConvexHull</string>
    </property>
   </action>
  </widget>

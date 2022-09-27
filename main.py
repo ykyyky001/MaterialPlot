@@ -35,6 +35,7 @@ class MainWindow(QMainWindow):
         # TODO(ky): update the ui nameing style in the menu to be consistent with the buttons.
         self.ui.actionOpen_CSV.triggered.connect(self.onActionOpenCSV)
         self.ui.actionHotReload.triggered.connect(self.onActionHotReload)
+        self.ui.actionConvexHull.triggered.connect(self.onActionConvexHull)
 
 #
 # Button and menu functions, called upon UI interactions.
