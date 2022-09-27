@@ -14,6 +14,10 @@ class AshbyGraphicsController(object):
         self.scene.clear()
         self.graphicItems.clear() # not necessary at present, for further use
 
+    def drawAllMaterialEclipses(self):
+        for name, info in self.model.getAllItems().items():
+            self.drawEllipse(info)
+
     def drawEllipse(self, mat_item: MaterialItem):
         brush = QBrush(QColor(mat_item.color_r, mat_item.color_g, mat_item.color_b, a = 100))
         elps = self.scene.addEllipse(QRectF(mat_item.x, mat_item.y, mat_item.w, mat_item.h), self.pen, brush)

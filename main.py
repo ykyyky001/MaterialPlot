@@ -53,8 +53,7 @@ class MainWindow(QMainWindow):
         Draws all existing materials onto the plot.
         '''
         self.controller.clearScene()
-        for name, info in self.model.getAllItems().items():
-            self.controller.drawEllipse(info)
+        self.controller.drawAllMaterialEclipses()
 
     def onActionOpenCSV(self):
         '''
