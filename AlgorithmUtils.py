@@ -21,20 +21,3 @@ def ellipseHull(ellipses: List[MaterialItem], sf=0.01):
     hull = ConvexHull(pts)
     
     return pts[hull.vertices]
-
-if "__main__" == __name__:
-    import csv
-    currentData = []
-    with open('test.csv', "r") as f:
-        csvrows = csv.DictReader(f)
-        for index, row in enumerate(csvrows):
-            currentData.append(row)
-    ellipses = []
-    for raw_data in currentData:
-        eclipse_info = simpleEclipse(x = float(raw_data["Param2_mean"]),
-                                    y = float(raw_data["Param3_mean"]),
-                                    w = float(raw_data["Param2_sd"]),
-                                    h = float(raw_data["Param3_sd"]),
-                                    label = raw_data["Name"])
-        ellipses.append(eclipse_info)
-    ellipseHull(ellipses)
