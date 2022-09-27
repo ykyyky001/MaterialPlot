@@ -43,9 +43,9 @@ class AshbyModel(object):
 	def getItem(self, label):
 		if label in self.items.keys():
 			return self.items[label]
-		# else:
-		# 	print("Do not have info about this material.")
-		# 	return None
+		else:
+			print("Do not have info about this material.")
+			return None
 
 	def getCount(self):
 		return len(self.items)

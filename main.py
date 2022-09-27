@@ -39,6 +39,9 @@ class MainWindow(QMainWindow):
 #
 
     def onActionHotReload(self):
+        '''
+        Hot reloads the code modules. For debug purpose.
+        '''
         from HotReloadModule import reloadModules
         reloadModules()
         from GraphicsModule import AshbyGraphicsController
@@ -46,7 +49,7 @@ class MainWindow(QMainWindow):
 
     def onClickGenPropChrt(self):
         '''
-        Draws all existing materials in our model onto the plot.
+        Draws all existing materials onto the plot.
         '''
         print("Clicked!")
         for name, info in self.model.getAllItems().items():
