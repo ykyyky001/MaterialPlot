@@ -38,8 +38,12 @@ class AshbyModel(object):
 	def initFromData(self, data: list):
 		# TODO(team): adopt to the case when multiple lines in raw data could be one single item.
 		for item in data:
-			matitem = MaterialItem(item)
-			self.items[matitem.label] = matitem
+			try:
+				matitem = MaterialItem(item)
+				self.items[matitem.label] = matitem
+			except Exception as e:
+				# todo: Only for compatibility, remove this at last! Deal with the special case in data!
+				print(e)
 
 	def getAllItems(self):
 		return self.items
