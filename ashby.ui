@@ -145,7 +145,7 @@
      <x>0</x>
      <y>0</y>
      <width>1654</width>
-     <height>22</height>
+     <height>21</height>
     </rect>
    </property>
    <widget class="QMenu" name="menuFile">
@@ -221,14 +221,18 @@
    <attribute name="toolBarBreak">
     <bool>false</bool>
    </attribute>
-   <addaction name="actionHome"/>
-   <addaction name="actionBrowse"/>
-   <addaction name="actionSearch"/>
-   <addaction name="actionChart"/>
-   <addaction name="actionSolver"/>
-   <addaction name="actionSynthesizer"/>
    <addaction name="actionHotReload"/>
    <addaction name="actionConvexHull"/>
+   <addaction name="separator"/>
+   <addaction name="actionLoadData"/>
+   <addaction name="actionFamily"/>
+   <addaction name="actionAxes"/>
+   <addaction name="actionGenerate_Chart"/>
+   <addaction name="actionSelection"/>
+   <addaction name="actionPlot_Selection_Lines"/>
+   <addaction name="actionExport"/>
+   <addaction name="separator"/>
+   <addaction name="actionSearch"/>
   </widget>
   <action name="actionOpen_CSV">
    <property name="text">
@@ -240,34 +244,25 @@
     <string>Exit</string>
    </property>
   </action>
-  <action name="actionHome">
+  <action name="actionLoadData">
    <property name="text">
-    <string>Home</string>
+    <string>Load Data</string>
+   </property>
+   <property name="toolTip">
+    <string>Load Data</string>
    </property>
   </action>
-  <action name="actionBrowse">
+  <action name="actionAxes">
    <property name="text">
-    <string>Browse</string>
+    <string>Axes</string>
+   </property>
+   <property name="toolTip">
+    <string>Axes</string>
    </property>
   </action>
   <action name="actionSearch">
    <property name="text">
     <string>Search</string>
-   </property>
-  </action>
-  <action name="actionChart">
-   <property name="text">
-    <string>Chart</string>
-   </property>
-  </action>
-  <action name="actionSolver">
-   <property name="text">
-    <string>Solver</string>
-   </property>
-  </action>
-  <action name="actionSynthesizer">
-   <property name="text">
-    <string>Synthesizer</string>
    </property>
   </action>
   <action name="actionTools">
@@ -319,6 +314,31 @@
   <action name="actionConvexHull">
    <property name="text">
     <string>ConvexHull</string>
+   </property>
+  </action>
+  <action name="actionFamily">
+   <property name="text">
+    <string>Family</string>
+   </property>
+  </action>
+  <action name="actionGenerate_Chart">
+   <property name="text">
+    <string>Generate Chart</string>
+   </property>
+  </action>
+  <action name="actionSelection">
+   <property name="text">
+    <string>Selection</string>
+   </property>
+  </action>
+  <action name="actionPlot_Selection_Lines">
+   <property name="text">
+    <string>Plot Selection Lines</string>
+   </property>
+  </action>
+  <action name="actionExport">
+   <property name="text">
+    <string>Export</string>
    </property>
   </action>
  </widget>
