@@ -55,6 +55,14 @@ class AshbyModel(object):
 			print("Do not have info about this material.")
 			return None
 
+	def getItemsByFamily(self, column: str, label: str):
+		#TODO(tieian): implement this.
+		pass
+
+	def provideFamilyCandidateByColumn(self, column_name: str):
+		#TODO(tieian): implement this.
+		pass
+
 	def getCount(self):
 		return len(self.items)
 

@@ -24,6 +24,13 @@ class AshbyGraphicsController(object):
         for name, info in self.model.getAllItems().items():
             self.drawEllipse(info)
 
+    def drawFamilyHull(self):
+        #TODO(tienan): implement this.
+        #1. Pop a selection for user. call provideFamilyCandidateByColumn()
+        #2. Return items from the family by the selection. call getItemsByFamily()
+        #3. Call drawHullByFamily()
+        pass
+
     #
     # Private
     #
@@ -48,11 +55,9 @@ class AshbyGraphicsController(object):
 
             self.graphicItems.append(graphicitem)	# not necessary at present, for further use
             self.graphicItems.append(graphicitem2)	# not necessary at present, for further use
-    def drawRegressionLine(self):
-        #TODO(tienan): implement this.
-        pass
 
     def drawHull(self):
+        #TODO(tienan): implmenet hull by family.
         hull_v = ellipseHull(list(self.model.getAllItems().values()) , 2, 200) # expand ratio = 2, step = 200
         # i add the QLineEdit in UI called Exp_Ratio. How to call it here?
         polygon = QPolygonF(list(map(QPointF, *hull_v.T)))
