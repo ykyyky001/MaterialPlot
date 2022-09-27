@@ -1,7 +1,9 @@
+# -*- coding:utf-8 -*-
 from PySide2.QtCore import QRectF, QPointF
 from PySide2.QtWidgets import QGraphicsScene
 from PySide2.QtGui import QBrush, QPen, QColor, QFont
 from DataModel import AshbyModel, MaterialItem
+
 
 class AshbyGraphicsController(object):
     def __init__(self, scene: QGraphicsScene, model: AshbyModel):

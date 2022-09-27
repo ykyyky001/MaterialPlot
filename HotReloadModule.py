@@ -6,6 +6,7 @@ from gc import enable as gcenable
 
 ModuleNames = ["GraphicsModule", "main", "DataModel"]
 
+
 def reloadModules():
 	gcdisable()
 	for name in ModuleNames:
