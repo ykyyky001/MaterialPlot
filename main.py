@@ -36,6 +36,10 @@ class MainWindow(QMainWindow):
         self.ui.actionOpen_CSV.triggered.connect(self.onActionOpenCSV)
         self.ui.actionHotReload.triggered.connect(self.onActionHotReload)
         self.ui.actionConvexHull.triggered.connect(self.onActionConvexHull)
+        self.ui.actionGenerateChart.triggered.connect(self.onClickGenPropChrt)
+        self.ui.actionFamilyBubble.triggered.connect(self.onActionConvexHull)
+        self.ui.actionPlotSelLn.triggered.connect(self.onClickPlotSelLn)
+        
 
 #
 # Button and menu functions, called upon UI interactions.

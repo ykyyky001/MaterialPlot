@@ -6,8 +6,8 @@
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>1654</width>
-    <height>1152</height>
+    <width>1384</width>
+    <height>1033</height>
    </rect>
   </property>
   <property name="windowTitle">
@@ -144,7 +144,7 @@
     <rect>
      <x>0</x>
      <y>0</y>
-     <width>1654</width>
+     <width>1384</width>
      <height>21</height>
     </rect>
    </property>
@@ -224,12 +224,13 @@
    <addaction name="actionHotReload"/>
    <addaction name="actionConvexHull"/>
    <addaction name="separator"/>
-   <addaction name="actionLoadData"/>
+   <addaction name="actionOpen_CSV"/>
    <addaction name="actionFamily"/>
    <addaction name="actionAxes"/>
-   <addaction name="actionGenerate_Chart"/>
+   <addaction name="actionGenerateChart"/>
+   <addaction name="actionFamilyBubble"/>
    <addaction name="actionSelection"/>
-   <addaction name="actionPlot_Selection_Lines"/>
+   <addaction name="actionPlotSelLn"/>
    <addaction name="actionExport"/>
    <addaction name="separator"/>
    <addaction name="actionSearch"/>
@@ -242,14 +243,6 @@
   <action name="actionExit">
    <property name="text">
     <string>Exit</string>
-   </property>
-  </action>
-  <action name="actionLoadData">
-   <property name="text">
-    <string>Load Data</string>
-   </property>
-   <property name="toolTip">
-    <string>Load Data</string>
    </property>
   </action>
   <action name="actionAxes">
@@ -321,7 +314,7 @@
     <string>Family</string>
    </property>
   </action>
-  <action name="actionGenerate_Chart">
+  <action name="actionGenerateChart">
    <property name="text">
     <string>Generate Chart</string>
    </property>
@@ -331,7 +324,7 @@
     <string>Selection</string>
    </property>
   </action>
-  <action name="actionPlot_Selection_Lines">
+  <action name="actionPlotSelLn">
    <property name="text">
     <string>Plot Selection Lines</string>
    </property>
@@ -339,6 +332,11 @@
   <action name="actionExport">
    <property name="text">
     <string>Export</string>
+   </property>
+  </action>
+  <action name="actionFamilyBubble">
+   <property name="text">
+    <string>Family Bubble</string>
    </property>
   </action>
  </widget>
