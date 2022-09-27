@@ -5,7 +5,7 @@ from PySide2.QtWidgets import QApplication, QMainWindow, QGraphicsScene, QFileDi
 from PySide2.QtGui import QBrush, QPen, QColor, QFont
 import csv
 from GraphicsModule import AshbyGraphicsController
-from DataModel import AshbyModel, MaterialItem
+from DataModel import AshbyModel
 
 class MainWindow(QMainWindow):
     def __init__(self):
@@ -37,23 +37,24 @@ class MainWindow(QMainWindow):
 #
 # Button and menu functions, called upon UI interactions.
 #
-
     def onActionHotReload(self):
         '''
         Hot reloads the code modules. For debug purpose.
         '''
         from HotReloadModule import reloadModules
         reloadModules()
+        from DataModel import AshbyModel
         from GraphicsModule import AshbyGraphicsController
+        self.model = AshbyModel(self.currentData)
         self.controller = AshbyGraphicsController(self.myScene, self.model)
 
     def onClickGenPropChrt(self):
         '''
         Draws all existing materials onto the plot.
         '''
-        print("Clicked!")
+        self.controller.clearScene()
         for name, info in self.model.getAllItems().items():
-            self.drawEllipse(info)
+            self.controller.drawEllipse(info)
 
     def onActionOpenCSV(self):
         '''
@@ -65,7 +66,6 @@ class MainWindow(QMainWindow):
         self.controller = AshbyGraphicsController(self.myScene, self.model)
 
     def onClickPlotSelLn(self):
-        print("Now the selection line.")
         self.controller.drawLine()
 
     def onActionClear(self):
@@ -84,19 +84,6 @@ class MainWindow(QMainWindow):
                 for index, row in enumerate(csvrows):
                     self.currentData.append(row)
             print(self.currentData)
-
-    def drawLine(self):
-        line = self.myScene.addLine(0,0,400,400,self.pen)
-
-
-    def drawEllipse(self, elps: MaterialItem):
-        brush = QBrush(QColor(elps.color_r, elps.color_g, elps.color_b, a = 100))
-        elps_draw = self.myScene.addEllipse(QRectF(elps.x, elps.y, elps.w, elps.h), self.pen, brush)
-        text = self.myScene.addText(elps.label, QFont("Arial", 12, 2))
-        text.setPos(QPointF(elps.x, elps.y))
-        if elps.rotation:
-            elps_draw.setRotation(elps.rotation)
-            text.setRotation(elps.rotation)
 
 
 if __name__ == '__main__':

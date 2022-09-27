@@ -1,7 +1,7 @@
+from PySide2.QtCore import QRectF, QPointF
 from PySide2.QtWidgets import QGraphicsScene
 from PySide2.QtGui import QBrush, QPen, QColor, QFont
-from DataModel import AshbyModel
-
+from DataModel import AshbyModel, MaterialItem
 
 class AshbyGraphicsController(object):
     def __init__(self, scene: QGraphicsScene, model: AshbyModel):
@@ -13,6 +13,14 @@ class AshbyGraphicsController(object):
     def clearScene(self):
         self.scene.clear()
         self.graphicItems.clear() # not necessary at present, for further use
+
+    def drawEllipse(self, mat_item: MaterialItem):
+        brush = QBrush(QColor(mat_item.color_r, mat_item.color_g, mat_item.color_b, a = 100))
+        elps = self.scene.addEllipse(QRectF(mat_item.x, mat_item.y, mat_item.w, mat_item.h), self.pen, brush)
+        text = self.scene.addText(mat_item.label, QFont("Arial", 12, 2))
+        text.setPos(QPointF(mat_item.x, mat_item.y))
+        elps.setRotation(mat_item.rotation)
+        text.setRotation(mat_item.rotation)
 
     def drawLine(self):
         # fake example, make your draw with your data
