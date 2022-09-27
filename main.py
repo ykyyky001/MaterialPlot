@@ -73,6 +73,9 @@ class MainWindow(QMainWindow):
     def onActionClear(self):
         print("Graph cleared.")
         self.controller.clearScene()
+        
+    def onActionConvexHull(self):
+        self.controller.drawHull()
 
 #
 # Internal functions.

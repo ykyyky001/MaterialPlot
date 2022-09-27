@@ -1,42 +1,26 @@
 import numpy as np
-from main import simpleEclipse
 from typing import List
 from scipy.spatial import ConvexHull
+from DataModel import MaterialItem
 
-COLOR = ((0, 255, 0), (0, 0, 255), (255, 0, 0))
-DEBUG = False
 
-def EllipseHull(ellipses: List[simpleEclipse], sf=0.01):
-    # TODO remove DEBUG code
-    
-    if DEBUG:
-        import cv2
-        img = np.zeros((1200, 400, 3))
-        img[...] = 255
+def ellipseHull(ellipses: List[MaterialItem], sf=0.01):
     pts = []
     for i, ellipse in enumerate(ellipses):
         t = np.linspace(0, 2*np.math.pi, 200)
-        x = ellipse.w*np.sin(t) + ellipse.x
-        y = ellipse.h*np.cos(t) + ellipse.y
+        
+        x = ellipse.w*(np.sin(t)+1)/2 + ellipse.x
+        y = ellipse.h*(np.cos(t)+1)/2 + ellipse.y
         xy = np.stack((x, y)).T
-        if DEBUG:
-            xy[:, 0] /= 2
-            xy[:, 0] += 100
-            xy[:, 1] /= 2
-            for pt in xy:
-                img[int(pt[1]), int(pt[0]), :] = COLOR[i]
+        if ellipse.rotation is not None:
+            # TODO(cow) rotation points
+            pass
         pts.append(xy)
 
     pts = np.concatenate(pts, axis=0)
     hull = ConvexHull(pts)
     
-    if DEBUG:
-        for pt in pts[hull.vertices]:
-            img[int(pt[1]), int(pt[0]), :] = (0, 127, 127)
-        cv2.imshow('test1', img)
-
-        cv2.waitKey(0)
-    return hull
+    return pts[hull.vertices]
 
 if "__main__" == __name__:
     import csv
@@ -53,4 +37,4 @@ if "__main__" == __name__:
                                     h = float(raw_data["Param3_sd"]),
                                     label = raw_data["Name"])
         ellipses.append(eclipse_info)
-    EllipseHull(ellipses)
+    ellipseHull(ellipses)

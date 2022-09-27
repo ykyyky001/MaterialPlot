@@ -4,7 +4,7 @@ from gc import collect as gccollect
 from gc import disable as gcdisable
 from gc import enable as gcenable
 
-ModuleNames = ["GraphicsModule", "main", "DataModel"]
+ModuleNames = ["GraphicsModule", "main", "DataModel", 'AlgorithmUtils']
 
 
 def reloadModules():

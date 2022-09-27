@@ -1,16 +1,10 @@
 # -*- coding:utf-8 -*-
 from PySide2.QtCore import QRectF, QPointF
 from PySide2.QtWidgets import QGraphicsScene
-<<<<<<< HEAD
-from PySide2.QtGui import QBrush, QPen, QColor, QFont
-from DataModel import AshbyModel, MaterialItem
-=======
 from PySide2.QtGui import QBrush, QPen, QColor, QFont, QPolygonF
 from PySide2.QtCore import QPointF
-from DataModel import AshbyModel
-import cv2
->>>>>>> 2a70a46... ellipse hull algo
-
+from DataModel import AshbyModel, MaterialItem
+from AlgorithmUtils import ellipseHull
 
 class AshbyGraphicsController(object):
     def __init__(self, scene: QGraphicsScene, model: AshbyModel):
@@ -47,13 +41,9 @@ class AshbyGraphicsController(object):
             graphicitem2 = self.scene.addLine(mean -10 , std + 10, mean + 10, std-10, self.pen)
 
             self.graphicItems.append(graphicitem)	# not necessary at present, for further use
-<<<<<<< HEAD
-            self.graphicItems.append(graphicitem2)	# not necessary at present, for further use
-=======
             self.graphicItems.append(graphicitem2)	# not necessary at present, for further use
 
     def drawHull(self):
-        polygon = QPolygonF([QPointF(20, 20), QPointF(20, 100), QPointF(100, 100), QPointF(100, 20)])
+        hull_v = ellipseHull(list(self.model.getAllItems().values()))
+        polygon = QPolygonF(list(map(QPointF, *hull_v.T)))
         self.scene.addPolygon(polygon)
-        
->>>>>>> 2a70a46... ellipse hull algo
