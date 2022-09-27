@@ -135,7 +135,7 @@
      </layout>
     </item>
     <item>
-     <widget class="QGraphicsView" name="graphicsView"/>
+     <widget class="AGraphicsView" name="graphicsView"/>
     </item>
    </layout>
   </widget>
@@ -145,7 +145,7 @@
      <x>0</x>
      <y>0</y>
      <width>1384</width>
-     <height>21</height>
+     <height>23</height>
     </rect>
    </property>
    <widget class="QMenu" name="menuFile">
@@ -223,6 +223,7 @@
    </attribute>
    <addaction name="actionHotReload"/>
    <addaction name="actionConvexHull"/>
+   <addaction name="actionResetView"/>
    <addaction name="separator"/>
    <addaction name="actionOpen_CSV"/>
    <addaction name="actionFamily"/>
@@ -339,7 +340,22 @@
     <string>Family Bubble</string>
    </property>
   </action>
+  <action name="actionResetView">
+   <property name="text">
+    <string>ResetView</string>
+   </property>
+   <property name="toolTip">
+    <string>ResetView</string>
+   </property>
+  </action>
  </widget>
+ <customwidgets>
+  <customwidget>
+   <class>AGraphicsView</class>
+   <extends>QGraphicsView</extends>
+   <header location="global">AGraphicsView</header>
+  </customwidget>
+ </customwidgets>
  <resources/>
  <connections/>
 </ui>

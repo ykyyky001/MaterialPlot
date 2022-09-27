@@ -7,6 +7,7 @@ from PySide2.QtGui import QBrush, QPen, QColor, QFont
 import csv
 from GraphicsModule import AshbyGraphicsController
 from DataModel import AshbyModel
+from View.AGraphicsView import AGraphicsView
 
 
 class MainWindow(QMainWindow):
@@ -15,8 +16,9 @@ class MainWindow(QMainWindow):
         file = QFile("ashby.ui")
         file.open(QFile.ReadOnly)
         file.close()
-
-        self.ui = QUiLoader().load(file)
+        loader = QUiLoader()
+        loader.registerCustomWidget(AGraphicsView)
+        self.ui = loader.load(file)
         self.connectSignals()
         self.ui.show()
 
@@ -27,6 +29,7 @@ class MainWindow(QMainWindow):
         self.controller = AshbyGraphicsController(self.myScene, self.model)
 
         self.pen = QPen(QColor(0,0,0))
+        self.ui.graphicsView.resetView()
 
     def connectSignals(self):
         self.ui.Plot_Prop_Chrt.clicked.connect(self.onClickGenPropChrt)
@@ -39,11 +42,13 @@ class MainWindow(QMainWindow):
         self.ui.actionGenerateChart.triggered.connect(self.onClickGenPropChrt)
         self.ui.actionFamilyBubble.triggered.connect(self.onActionConvexHull)
         self.ui.actionPlotSelLn.triggered.connect(self.onClickPlotSelLn)
-        
-
+        self.ui.actionResetView.triggered.connect(self.onResetView)
 #
 # Button and menu functions, called upon UI interactions.
 #
+    def onResetView(self):
+        self.ui.graphicsView.resetView()
+
     def onActionHotReload(self):
         '''
         Hot reloads the code modules. For debug purpose.
@@ -77,6 +82,7 @@ class MainWindow(QMainWindow):
     def onActionClear(self):
         print("Graph cleared.")
         self.controller.clearScene()
+        self.ui.graphicsView.resetView()
         
     def onActionConvexHull(self):
         self.controller.drawHull()
