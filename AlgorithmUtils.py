@@ -9,8 +9,8 @@ def ellipseHull(ellipses: List[MaterialItem], sf=0.01):
     for i, ellipse in enumerate(ellipses):
         t = np.linspace(0, 2*np.math.pi, 200)
         
-        x = ellipse.w*(np.sin(t)+1)/2 + ellipse.x
-        y = ellipse.h*(np.cos(t)+1)/2 + ellipse.y
+        x = ellipse.w*np.sin(t)/2 * 2 + ellipse.x + ellipse.w/2
+        y = ellipse.h*np.cos(t)/2 * 2 + ellipse.y + ellipse.h/2
         xy = np.stack((x, y)).T
         if ellipse.rotation is not None:
             # TODO(cow) rotation points
