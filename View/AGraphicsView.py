@@ -3,6 +3,7 @@ import PySide2.QtGui
 from PySide2.QtWidgets import QGraphicsScene, QGraphicsView
 from PySide2.QtCore import QPointF, QRectF, Qt
 from PySide2.QtGui import QTransform
+from .AxisObjects import MarkLine, VerticalMarkLine, VShadowMarkLine, HShadowMarkLine
 import math
 
 
@@ -17,6 +18,19 @@ class AGraphicsView(QGraphicsView):
         self.viewPosInScene = self.initPos
         self.lastViewPosInScene = self.initPos
         self.lastPos = QPointF(0, 0)
+        self.setVerticalScrollBarPolicy(Qt.ScrollBarAlwaysOff)
+        self.setHorizontalScrollBarPolicy(Qt.ScrollBarAlwaysOff)
+        self._hMarkline = self._vMarkline = self._hsMarkline = self._vsMarkline = None
+
+    def initHelperItems(self):
+        self._hMarkline = MarkLine(self)
+        self._vMarkline = VerticalMarkLine(self)
+        self._hsMarkline = HShadowMarkLine(self)
+        self._vsMarkline = VShadowMarkLine(self)
+        self.scene().addItem(self._hMarkline)
+        self.scene().addItem(self._vMarkline)
+        self.scene().addItem(self._hsMarkline)
+        self.scene().addItem(self._vsMarkline)
 
     @property
     def initPos(self):
@@ -33,6 +47,10 @@ class AGraphicsView(QGraphicsView):
             self.rightDrag = False
 
         return super(AGraphicsView, self).mousePressEvent(mouseEvent)
+
+    def getViewRect(self):
+        # todo: performance bottleneck
+        return self.mapToScene(self.rect()).boundingRect()
 
     def mouseMoveEvent(self, mouseEvent):
         if self.dragMode() == QGraphicsView.ScrollHandDrag:
@@ -67,6 +85,13 @@ class AGraphicsView(QGraphicsView):
         vec = QPointF(self.viewPosInScene - mousePos)
         self.lastViewPosInScene = self.viewPosInScene = mousePos + vec / scale
         self.resetSceneRect()
+
+        # 刷新显示区域
+        self._hMarkline.setViewScale(self.viewScale)
+        self._vMarkline.setViewScale(self.viewScale)
+        self._hsMarkline.setViewScale(self.viewScale)
+        self._vsMarkline.setViewScale(self.viewScale)
+
         return super(AGraphicsView, self).wheelEvent(mouseEvent)
 
     def resetView(self):
@@ -76,6 +101,12 @@ class AGraphicsView(QGraphicsView):
         self.lastViewPosInScene = self.initPos
         self.lastPos = QPointF(0, 0)
 
+        # 刷新显示区域
+        if self._hMarkline:
+            self._hMarkline.setViewScale(self.viewScale)
+            self._vMarkline.setViewScale(self.viewScale)
+            self._hsMarkline.setViewScale(self.viewScale)
+            self._vsMarkline.setViewScale(self.viewScale)
         self.resetSceneRect()
 
     def resetSceneRect(self):
@@ -91,3 +122,9 @@ class AGraphicsView(QGraphicsView):
         trans = QTransform()
         trans.scale(self.viewScale, self.viewScale)
         self.setTransform(trans)
+        self.scene().update()
+        if self._hMarkline:
+            self._hMarkline.update()
+            self._vMarkline.update()
+            self._hsMarkline.update()
+            self._vsMarkline.update()
