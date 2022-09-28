@@ -35,7 +35,7 @@ class AshbyModel(object):
         self.data = self.initFromData(filename)
 
     def initFromData(self, filename: str):
-		# TODO(team) calculate case2 mean&std and fill in the table
+        # TODO(team) calculate case2 mean&std and fill in the table
         if filename:
             df = pd.read_csv(filename)
         else:

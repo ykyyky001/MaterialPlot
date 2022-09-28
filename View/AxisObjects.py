@@ -4,7 +4,7 @@
 from PySide2.QtWidgets import QGraphicsObject, QGraphicsItem, QGraphicsTextItem
 from PySide2.QtGui import QBrush, QPen, QColor, QFont, QPolygonF
 from PySide2.QtCore import QLineF, QPointF, QRectF, Qt
-
+import math
 
 MARKTRACK_MODE_LINEAR = 0
 MARKTRACK_MODE_LOGSCALE = 1
@@ -27,6 +27,11 @@ TICKS_TEXT_FONT = QFont("微软雅黑", 10)
 # 刻度线距离scene绘图面板最上方的距离
 TICKMARK_BAR_HEIGHT = 38.0
 TICKMARK_HEIGHT = 8
+
+MAJORTICK_HEIGHT = 19.0
+MINORTICK_HEIGHT = 10.0
+
+MINOR_TICK_COUNT = 5
 
 
 # 轨道的边框颜色:
@@ -63,25 +68,44 @@ class MarkLine(QGraphicsObject):
         if not force and self._viewRect == rect:
             return
         self._viewRect = rect
+        width = rect.width()
+        divs = int(width / 10 ** math.floor(math.log10(width)))
+        if divs < 2:
+            divs *= 10
+            base = 10 ** (math.floor(math.log10(width))-1)
+        else:
+            base = 10 ** (math.floor(math.log10(width)))
+
         lines = []
-        for i in range(20):
-            x = i*50
-            lines.append(QLineF(x, rect.top(), x, rect.top()+38/self.view_scale))
+        minor_lines = []
+        i = 0
+        for item in self._markTextItem:
+            item.hide()
+        x = math.floor(rect.left() / base) * base
+        while x < rect.right():
+            i += 1
+            lines.append(QLineF(x, rect.top()+(TICKMARK_BAR_HEIGHT - MAJORTICK_HEIGHT)/self.view_scale, x, rect.top()+TICKMARK_BAR_HEIGHT/self.view_scale))
+            for j in range(1, MINOR_TICK_COUNT):
+                minx = x + j * base / MINOR_TICK_COUNT
+                minor_lines.append(QLineF(minx, rect.top()+(TICKMARK_BAR_HEIGHT - MINORTICK_HEIGHT)/self.view_scale, minx, rect.top()+TICKMARK_BAR_HEIGHT/self.view_scale))
             if i >= len(self._markTextItem):
                 item = QGraphicsTextItem(self)
+                item.setFont(TICKS_TEXT_FONT)
+                item.setDefaultTextColor(TICKS_TEXT_COLOR)
+                item.setZValue(0)
+                item.setFlag(QGraphicsItem.ItemIgnoresTransformations)
                 self._markTextItem.append(item)
             else:
                 item = self._markTextItem[i]
-            item.setFont(TICKS_TEXT_FONT)
-            item.setDefaultTextColor(TICKS_TEXT_COLOR)
-            item.setZValue(0)
-            item.setFlag(QGraphicsItem.ItemIgnoresTransformations)
             y = rect.top() + 10 / self.view_scale
             item.setPos(QPointF(x, y))
-            item.setPlainText(str(x))
+            item.setPlainText("%g" % x)
             item.show()
 
+            x += base
+
         self._markLinesBold = lines
+        self._markLines = minor_lines
 
         return
         # 根据缩放，划定不同的刻度步长
@@ -197,7 +221,6 @@ class MarkLine(QGraphicsObject):
 
         # 细刻度线
         pen = QPen(QColor(112, 112, 112, 102))
-        pen.setStyle(Qt.DashDotLine)
         pen.setWidth(0)
         painter.setPen(pen)
         painter.drawLines(self._markLines)
