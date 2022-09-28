@@ -35,7 +35,7 @@ class AshbyModel(object):
         self.data = self.initFromData(filename)
 
     def initFromData(self, filename: str):
-		# TODO(team) calculate case2 mean&std and fill in the table
+        # TODO(team) calculate case2 mean&std and fill in the table
         if filename:
             df = pd.read_csv(filename)
         else:
@@ -58,7 +58,7 @@ class AshbyModel(object):
         return self.convertToItem(self.data[self.data.Name == label])
 
     def getItemsByFamily(self, column: str, label: str):
-        return self.convertToItem(self.data[self.data[column_name]==label])
+        return self.convertToItem(self.data[self.data[column]==label])
 
     def provideFamilyCandidateByColumn(self, column_name: str):
         candidate = self.data[column_name].drop_duplicates()
