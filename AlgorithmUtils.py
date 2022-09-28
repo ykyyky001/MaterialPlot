@@ -5,6 +5,8 @@ from DataModel import MaterialItem
 
 
 def ellipseHull(ellipses: List[MaterialItem], expand_ratio, step):
+    if len(ellipses) == 0:
+        return None
     pts = []
     for i, ellipse in enumerate(ellipses):
         t = np.linspace(0, 2*np.math.pi, step)
@@ -16,7 +18,6 @@ def ellipseHull(ellipses: List[MaterialItem], expand_ratio, step):
             # TODO(cow) rotation points
             pass
         pts.append(xy)
-
     pts = np.concatenate(pts, axis=0)
     hull = ConvexHull(pts)
     

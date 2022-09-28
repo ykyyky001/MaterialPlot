@@ -1,4 +1,5 @@
 # -*- coding:utf-8 -*-
+from typing import List
 from PySide2.QtCore import QRectF, QPointF
 from PySide2.QtWidgets import QGraphicsScene
 from PySide2.QtGui import QBrush, QPen, QColor, QFont, QPolygonF
@@ -7,10 +8,10 @@ from DataModel import AshbyModel, MaterialItem
 from AlgorithmUtils import ellipseHull
 
 class AshbyGraphicsController(object):
-    def __init__(self, scene: QGraphicsScene, current_data: list):
+    def __init__(self, scene: QGraphicsScene, filename: str):
         self.scene = scene
         self.pen = QPen(QColor(0,0,0))
-        self.model = AshbyModel(current_data)
+        self.model = AshbyModel(filename)
         self.graphicItems = [] # not necessary at present, for further use
 
     #
@@ -30,6 +31,10 @@ class AshbyGraphicsController(object):
         #2. Return items from the family by the selection. call getItemsByFamily()
         #3. Call drawHullByFamily()
         pass
+    
+    def drawAllHull(self):
+        items = self.model.getAllItems().values()
+        self.drawHull(items)
 
     #
     # Private
@@ -56,11 +61,11 @@ class AshbyGraphicsController(object):
             self.graphicItems.append(graphicitem)	# not necessary at present, for further use
             self.graphicItems.append(graphicitem2)	# not necessary at present, for further use
 
-    def drawHull(self):
-        #TODO(tienan): implmenet hull by family.
-        hull_v = ellipseHull(list(self.model.getAllItems().values()) , 2, 200) # expand ratio = 2, step = 200
-        # i add the QLineEdit in UI called Exp_Ratio. How to call it here?
-        polygon = QPolygonF(list(map(QPointF, *hull_v.T)))
-        self.pen = QPen(QColor(125, 125, 125, 50))
-        self.brush = QBrush(QColor(125, 125, 125, 50))
-        self.scene.addPolygon(polygon, self.pen, self.brush)
+    def drawHull(self, items: List[MaterialItem]):
+        if len(items) > 0:
+            hull_v = ellipseHull(items, 2, 200) # expand ratio = 2, step = 200
+            # i add the QLineEdit in UI called Exp_Ratio. How to call it here?
+            polygon = QPolygonF(list(map(QPointF, *hull_v.T)))
+            self.pen = QPen(QColor(125, 125, 125, 50))
+            self.brush = QBrush(QColor(125, 125, 125, 50))
+            self.scene.addPolygon(polygon, self.pen, self.brush)

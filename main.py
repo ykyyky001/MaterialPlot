@@ -20,11 +20,10 @@ class MainWindow(QMainWindow):
         self.ui = loader.load(file)
         self.connectSignals()
         self.ui.show()
-
-        self.currentData = []
+        self.csv_fpath = None
         self.myScene = QGraphicsScene()
         self.ui.graphicsView.setScene(self.myScene)
-        self.controller = AshbyGraphicsController(self.myScene, self.currentData)
+        self.controller = AshbyGraphicsController(self.myScene, self.csv_fpath)
 
         self.pen = QPen(QColor(0,0,0))
         self.ui.graphicsView.resetView()
@@ -54,7 +53,7 @@ class MainWindow(QMainWindow):
         from HotReloadModule import reloadModules
         reloadModules()
         from GraphicsModule import AshbyGraphicsController
-        self.controller = AshbyGraphicsController(self.myScene, self.currentData)
+        self.controller = AshbyGraphicsController(self.myScene, self.csv_fpath)
 
     def onClickGenPropChrt(self):
         '''
@@ -68,8 +67,10 @@ class MainWindow(QMainWindow):
         Loads data, updates both the model and controller.
         '''
         print("Ready to input data.")
-        self.loadDataFromCSV()
-        self.controller = AshbyGraphicsController(self.myScene, self.currentData)
+        filename, _ = QFileDialog.getOpenFileName(self, "Open CSV", filter="CSV Files (*.csv)")
+        if filename:
+            self.csv_fpath = filename
+        self.controller = AshbyGraphicsController(self.myScene, self.csv_fpath)
 
     def onClickPlotSelLn(self):
         self.controller.drawLine()
@@ -80,20 +81,7 @@ class MainWindow(QMainWindow):
         self.ui.graphicsView.resetView()
         
     def onActionConvexHull(self):
-        self.controller.drawHull()
-
-#
-# Internal functions.
-#
-    def loadDataFromCSV(self):
-        filename, _ = QFileDialog.getOpenFileName(self, "Open CSV", filter="CSV Files (*.csv)")
-        if filename:
-            self.currentData.clear()
-            with open(filename, "r") as f:
-                csvrows = csv.DictReader(f)
-                for index, row in enumerate(csvrows):
-                    self.currentData.append(row)
-            print(self.currentData)
+        self.controller.drawAllHull()
 
 
 if __name__ == '__main__':
