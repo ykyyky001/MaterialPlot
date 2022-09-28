@@ -16,13 +16,13 @@ MARKTRACK_HEIGHT = 40  # 刻度条的高度
 SCENE_WIDTH = 1013
 SCENE_HEIGHT = 948
 # 时间刻度条的背景色:
-MARKTRACK_BG_COLOR = QColor(55, 55, 55, 50)
+MARKTRACK_BG_COLOR = QColor(200, 200, 200, 200)
 # 时间刻度线的颜色:
 TICKS_COLOR = QColor(134, 134, 134, 255)
 # 刻度文字的颜色:
-TICKS_TEXT_COLOR = QColor(200, 200, 200, 255)
+TICKS_TEXT_COLOR = QColor(0, 0, 0, 255)
 # 刻度文字的字体:
-TICKS_TEXT_FONT = QFont("微软雅黑", 8)
+TICKS_TEXT_FONT = QFont("微软雅黑", 10)
 
 # 刻度线距离scene绘图面板最上方的距离
 TICKMARK_BAR_HEIGHT = 38.0
@@ -42,7 +42,7 @@ class MarkLine(QGraphicsObject):
         self.startX = 0.0
         self.endX = SCENE_WIDTH
         self.view_scale = 1.0  # 画布缩放倍率
-
+        self.textitem = None
         self._axisMode = MARKTRACK_MODE_LINEAR
         self._markTextItem = []
         self._markLines = []
@@ -63,8 +63,26 @@ class MarkLine(QGraphicsObject):
         if not force and self._viewRect == rect:
             return
         self._viewRect = rect
-        print(self.view_scale, rect)
-        self._markLinesBold = [QLineF(100, 0, 100, 100)]
+        lines = []
+        for i in range(20):
+            x = i*50
+            lines.append(QLineF(x, rect.top(), x, rect.top()+38/self.view_scale))
+            if i >= len(self._markTextItem):
+                item = QGraphicsTextItem(self)
+                self._markTextItem.append(item)
+            else:
+                item = self._markTextItem[i]
+            item.setFont(TICKS_TEXT_FONT)
+            item.setDefaultTextColor(TICKS_TEXT_COLOR)
+            item.setZValue(0)
+            item.setFlag(QGraphicsItem.ItemIgnoresTransformations)
+            y = rect.top() + 10 / self.view_scale
+            item.setPos(QPointF(x, y))
+            item.setPlainText(str(x))
+            item.show()
+
+        self._markLinesBold = lines
+
         return
         # 根据缩放，划定不同的刻度步长
         timelineTick = self.view.tick
@@ -174,8 +192,8 @@ class MarkLine(QGraphicsObject):
         # 背景色
         # self.
         rect = self.boundingRect()
-        # painter.pen().setWidth(0)
-        # painter.fillRect(rect, self.brush)
+        painter.pen().setWidth(0)
+        painter.fillRect(rect, self.brush)
 
         # 细刻度线
         pen = QPen(QColor(112, 112, 112, 102))
@@ -192,18 +210,25 @@ class MarkLine(QGraphicsObject):
 
         # 水平线
         painter.setPen(boldPen)
-        painter.drawLine(QLineF(rect.left(), rect.top()+TICKMARK_BAR_HEIGHT, rect.right(), rect.top()+TICKMARK_BAR_HEIGHT))
+        painter.drawLine(QLineF(rect.left(), rect.top()+TICKMARK_BAR_HEIGHT/self.view_scale, rect.right(), rect.top()+TICKMARK_BAR_HEIGHT/self.view_scale))
 
     def boundingRect(self):
         """交互范围."""
         rect = self.view.getViewRect()
-        newRect = QRectF(rect.left(), rect.top(), rect.width(), TICKMARK_BAR_HEIGHT)
+        newRect = QRectF(rect.left(), rect.top(), rect.width(), TICKMARK_BAR_HEIGHT/self.view_scale)
         return newRect
 
     def getViewScale(self):
         if self.scene() is None:
             return 1.0
         return self.view.getScale()
+
+    def update(self, rect = None):
+        if self.textitem:
+            self.textitem.hide()
+        super(MarkLine, self).update()
+        if self.textitem:
+            self.textitem.show()
 
     def setViewScale(self, scale):
         self.view_scale = scale

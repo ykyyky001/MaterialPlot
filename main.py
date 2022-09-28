@@ -26,7 +26,6 @@ class MainWindow(QMainWindow):
         self.controller = AshbyGraphicsController(self.myScene, self.csv_fpath)
 
         self.pen = QPen(QColor(0,0,0))
-        self.ui.graphicsView.initHelperItems()
         self.ui.graphicsView.resetView()
 
     def connectSignals(self):
