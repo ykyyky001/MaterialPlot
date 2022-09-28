@@ -64,6 +64,10 @@ class AshbyModel(object):
         candidate = self.data[column_name].drop_duplicates()
         return candidate.values
 
+    def getCandidateColumns(self):
+        # TODO(ky/tn): a more regulated filter for column candidates.
+        return [column for column in self.data.columns if "Param" in column]
+
     def getCount(self):
         return len(self.data)
 

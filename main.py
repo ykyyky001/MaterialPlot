@@ -82,6 +82,7 @@ class MainWindow(QMainWindow):
         
     def onActionConvexHull(self):
         self.controller.drawAllHull()
+        # self.controller.drawFamilyHull()
 
 
 if __name__ == '__main__':

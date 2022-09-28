@@ -26,12 +26,15 @@ class AshbyGraphicsController(object):
             self.drawEllipse(info)
 
     def drawFamilyHull(self):
-        #TODO(tienan): implement this.
-        #1. Pop a selection for user. call provideFamilyCandidateByColumn()
-        #2. Return items from the family by the selection. call getItemsByFamily()
-        #3. Call drawHullByFamily()
-        pass
-    
+        candidate_columns = self.model.getCandidateColumns()
+        #TODO(tienan): implement the actual pop-up selection logic.
+        selected_column = candidate_columns[0]
+        family_candidates = self.model.provideFamilyCandidateByColumn(selected_column)
+        #TODO(tienan): implement the actual pop-up selection logic.
+        selected_family = family_candidates[0]
+        items = self.model.getItemsByFamily(selected_column, selected_family).values()
+        self.drawHull(items)
+
     def drawAllHull(self):
         items = self.model.getAllItems().values()
         self.drawHull(items)
