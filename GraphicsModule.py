@@ -71,11 +71,11 @@ class AshbyGraphicsController(object):
 
     def drawHull(self, items: List[MaterialItem]):
         if len(items) > 0:
-            color = self.model.getMeanColor(items)
+            r, g, b = self.model.getMeanColor(items)
             hull_v = ellipseHull(items, 2, 200) # expand ratio = 2, step = 200
             # i add the QLineEdit in UI called Exp_Ratio. How to call it here?
             polygon = QPolygonF(list(map(QPointF, *hull_v.T)))
             self.pen = QPen(QColor(125, 125, 125, 50))
-            self.brush = QBrush(QColor(125, 125, 125, 50))
+            self.brush = QBrush(QColor(r, g, b, 100))
             poly = self.scene.addPolygon(polygon, self.pen, self.brush)
             self.graphicItems.append(poly)

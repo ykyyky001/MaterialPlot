@@ -72,10 +72,19 @@ class AshbyModel(object):
         return len(self.data)
 
     def getMeanColor(self, items: List[MaterialItem]):
-        self.meanR = float(items["Color_R"])
-        self.meanG = float(items["Color_G"])
-        self.meanB = float(items["Color_B"])
-        print("Family bubble has R ", self.meanR, ", G", self.meanG, ", B", self.meanB)
-        return [self.meanR, self.meanG, self.meanB]
+        sum_r = 0
+        sum_g = 0
+        sum_b = 0
+        for item in items:
+            r = item.color_r
+            g = item.color_g
+            b = item.color_b
+            sum_r += r
+            sum_g += g
+            sum_b += b
+        meanR = float(sum_r)/float(len(items))
+        meanG = float(sum_g)/float(len(items))
+        meanB = float(sum_b)/float(len(items))
+        return meanR, meanG, meanB
         
 
