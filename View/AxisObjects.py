@@ -70,24 +70,30 @@ class MarkLine(QGraphicsObject):
         self._viewRect = rect
         width = rect.width()
         divs = int(width / 10 ** math.floor(math.log10(width)))
+        # divs: how many major ticks in view
         if divs < 2:
             divs *= 10
             base = 10 ** (math.floor(math.log10(width))-1)
         else:
             base = 10 ** (math.floor(math.log10(width)))
-
+        # base: 0.1 1 10 100, etc
         lines = []
         minor_lines = []
         i = 0
+        # hide all textitem first
         for item in self._markTextItem:
             item.hide()
         x = math.floor(rect.left() / base) * base
         while x < rect.right():
             i += 1
+            # calc major ticks
             lines.append(QLineF(x, rect.top()+(TICKMARK_BAR_HEIGHT - MAJORTICK_HEIGHT)/self.view_scale, x, rect.top()+TICKMARK_BAR_HEIGHT/self.view_scale))
+            # calc minor ticks
             for j in range(1, MINOR_TICK_COUNT):
                 minx = x + j * base / MINOR_TICK_COUNT
                 minor_lines.append(QLineF(minx, rect.top()+(TICKMARK_BAR_HEIGHT - MINORTICK_HEIGHT)/self.view_scale, minx, rect.top()+TICKMARK_BAR_HEIGHT/self.view_scale))
+
+            # add tick texts
             if i >= len(self._markTextItem):
                 item = QGraphicsTextItem(self)
                 item.setFont(TICKS_TEXT_FONT)
@@ -106,103 +112,6 @@ class MarkLine(QGraphicsObject):
 
         self._markLinesBold = lines
         self._markLines = minor_lines
-
-        return
-        # 根据缩放，划定不同的刻度步长
-        timelineTick = self.view.tick
-        tickLength = timelineTick.getTickLength()
-        maxTick = timelineTick.getEndTick()
-        scale = self.getViewScale()
-        if scale < 0.012:	scaleLevel = 32
-        elif scale < 0.025:	scaleLevel = 16
-        elif scale < 0.05:	scaleLevel = 8
-        elif scale < 0.1:	scaleLevel = 4
-        elif scale < 0.2: 	scaleLevel = 2
-        elif scale < 0.5: 	scaleLevel = 1
-        elif scale < 0.8: 	scaleLevel = 0.5
-        elif scale < 1.5:	scaleLevel = 0.25
-        elif scale < 3:		scaleLevel = 0.125
-        else:   			scaleLevel = 0.0625
-        # 步长必须是tickLength的偶数倍
-        markStep = timelineTick.align2tick(scaleLevel * MARKTRACK_TICK_LENGTH)
-        if (markStep / tickLength) % 2 == 1:
-            markStep += tickLength
-
-        lines = []  # 细刻度线
-        linesBold = []  # 粗刻度线
-        marks = []  # 需要显示文字的位置
-        left = max(timelineTick.pos2tick(rect.left()), timelineTick.getStartTick())
-        right = min(timelineTick.pos2tick(rect.right()) + markStep, maxTick)
-        markTick = max(int(left / markStep) * markStep, 0)  # 返回小于left的最大step倍数
-        while markTick <= right:
-            # 大刻度
-            marks.append(markTick)
-            x = timelineTick.tick2pos(markTick)
-            y = rect.top() + TICKMARK_BAR_HEIGHT + self._viewRect.height()
-            y2 = y - self._viewRect.height() - TICKMARK_HEIGHT
-            linesBold.append(QLineF(x, y, x, y2))
-
-            # 小刻度
-            if scale < 2:
-                # 未防止太过密集，直接划分成4份
-                mini_step = markStep / 4
-                y2 = y - self._viewRect.height() - TICKMARK_HEIGHT / 4
-                for i in range(1, 4):
-                    # 小刻度也必须对齐tickLength
-                    mini_markTick = timelineTick.align2tick(markTick + mini_step * i)
-                    if mini_markTick > maxTick:
-                        break
-                    x = timelineTick.tick2pos(mini_markTick)
-                    lines.append(QLineF(x, y, x, y2))
-
-            elif scale < 4:
-                # 放大时，直接在对应帧的位置处画刻度
-                mini_step = tickLength
-                y2 = y - self._viewRect.height() - TICKMARK_HEIGHT / 4
-                while mini_step < markStep:
-                    x = timelineTick.tick2pos(markTick + mini_step)
-                    lines.append(QLineF(x, y, x, y2))
-                    mini_step += tickLength
-
-            else:
-                # 缩放到最大时，每帧显示文字
-                mini_step = tickLength
-                y2 = y - self._viewRect.height() - TICKMARK_HEIGHT
-                while mini_step < markStep and mini_step <= maxTick:
-                    x = timelineTick.tick2pos(markTick + mini_step)
-                    linesBold.append(QLineF(x, y, x, y2))
-                    marks.append(markTick + mini_step)
-                    mini_step += tickLength
-
-            markTick += markStep
-        self._markLines = lines
-        self._markLinesBold = linesBold
-
-        # 刻度文字
-        if len(self._markTextItem) < len(marks):
-            for i in range(len(marks) - len(self._markTextItem)):
-                item = QGraphicsTextItem(self)
-                item.setFont(TICKS_TEXT_FONT)
-                item.setDefaultTextColor(TICKS_TEXT_COLOR)
-                item.setZValue(0)
-                item.setFlag(QGraphicsItem.ItemIgnoresTransformations)
-                self._markTextItem.append(item)
-
-        for item in self._markTextItem:
-            item.hide()
-
-        i = 0
-        for markTick in marks:
-            item = self._markTextItem[i]
-            x = timelineTick.tick2pos(markTick)
-            y = rect.top() + TICKMARK_BAR_HEIGHT - TICKMARK_HEIGHT - 12
-            item.setPos(QPointF(x, y))
-
-            text = self.view.tickToTagText(markTick)
-            # text += "\n" + str(markTick)
-            item.setPlainText(text)
-            item.show()
-            i += 1
 
     def setAxisMode(self, mode):
         self._axisMode = mode
