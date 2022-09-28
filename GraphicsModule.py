@@ -14,14 +14,16 @@ class AshbyGraphicsController(object):
         self.pen = QPen(QColor(0,0,0))
         self.pen.setWidth(0)
         self.model = AshbyModel(filename)
-        self.graphicItems = [] # not necessary at present, for further use
+        self.graphicItems = []
 
     #
     # Public
     #
     def clearScene(self):
-        self.scene.clear()
-        self.graphicItems.clear() # not necessary at present, for further use
+        for item in self.graphicItems:
+            self.scene.removeItem(item)
+        # self.scene.clear()
+        self.graphicItems.clear()
 
     def drawAllMaterialEclipses(self):
         for name, info in self.model.getAllItems().items():
@@ -48,6 +50,7 @@ class AshbyGraphicsController(object):
         text.setPos(QPointF(mat_item.x, mat_item.y))
         elps.setRotation(mat_item.rotation)
         text.setRotation(mat_item.rotation)
+        self.graphicItems.extend((elps, text))
 
     def drawLine(self):
         # fake example, make your draw with your data
@@ -70,4 +73,5 @@ class AshbyGraphicsController(object):
             polygon = QPolygonF(list(map(QPointF, *hull_v.T)))
             self.pen = QPen(QColor(125, 125, 125, 50))
             self.brush = QBrush(QColor(125, 125, 125, 50))
-            self.scene.addPolygon(polygon, self.pen, self.brush)
+            poly = self.scene.addPolygon(polygon, self.pen, self.brush)
+            self.graphicItems.append(poly)

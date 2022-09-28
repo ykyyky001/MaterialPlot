@@ -100,12 +100,13 @@ class AGraphicsView(QGraphicsView):
         self.viewPosInScene = self.initPos
         self.lastViewPosInScene = self.initPos
         self.lastPos = QPointF(0, 0)
+
+        # 刷新显示区域
         if self._hMarkline:
-            self.scene().removeItem(self._hMarkline)
-            self.scene().removeItem(self._vMarkline)
-            self.scene().removeItem(self._hsMarkline)
-            self.scene().removeItem(self._vsMarkline)
-        self.initHelperItems()
+            self._hMarkline.setViewScale(self.viewScale)
+            self._vMarkline.setViewScale(self.viewScale)
+            self._hsMarkline.setViewScale(self.viewScale)
+            self._vsMarkline.setViewScale(self.viewScale)
         self.resetSceneRect()
 
     def resetSceneRect(self):
@@ -122,7 +123,8 @@ class AGraphicsView(QGraphicsView):
         trans.scale(self.viewScale, self.viewScale)
         self.setTransform(trans)
         self.scene().update()
-        self._hMarkline.update()
-        self._vMarkline.update()
-        self._hsMarkline.update()
-        self._vsMarkline.update()
+        if self._hMarkline:
+            self._hMarkline.update()
+            self._vMarkline.update()
+            self._hsMarkline.update()
+            self._vsMarkline.update()

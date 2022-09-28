@@ -7,7 +7,7 @@ from PySide2.QtGui import QBrush, QPen, QColor, QFont
 import csv
 from GraphicsModule import AshbyGraphicsController
 from View.AGraphicsView import AGraphicsView
-
+app = None
 
 class MainWindow(QMainWindow):
     def __init__(self):
@@ -27,6 +27,7 @@ class MainWindow(QMainWindow):
 
         self.pen = QPen(QColor(0,0,0))
         self.ui.graphicsView.resetView()
+        self.ui.graphicsView.initHelperItems()
 
     def connectSignals(self):
         self.ui.Plot_Prop_Chrt.clicked.connect(self.onClickGenPropChrt)
@@ -45,6 +46,7 @@ class MainWindow(QMainWindow):
 #
     def onResetView(self):
         self.ui.graphicsView.resetView()
+        app.processEvents()
 
     def onActionHotReload(self):
         '''
