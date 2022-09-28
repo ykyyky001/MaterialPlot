@@ -89,7 +89,7 @@ class AGraphicsView(QGraphicsView):
         self.viewPosInScene = self.initPos
         self.lastViewPosInScene = self.initPos
         self.lastPos = QPointF(0, 0)
-
+        self.scene().clear()
         self.initHelperItems()
         self.resetSceneRect()
 
