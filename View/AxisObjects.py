@@ -87,11 +87,11 @@ class MarkLine(QGraphicsObject):
         while x < rect.right():
             i += 1
             # calc major ticks
-            lines.append(QLineF(x, rect.top()+(TICKMARK_BAR_HEIGHT - MAJORTICK_HEIGHT)/self.view_scale, x, rect.top()+TICKMARK_BAR_HEIGHT/self.view_scale))
+            lines.append(QLineF(x, rect.bottom()-(TICKMARK_BAR_HEIGHT - MAJORTICK_HEIGHT)/self.view_scale, x, rect.bottom()-TICKMARK_BAR_HEIGHT/self.view_scale))
             # calc minor ticks
             for j in range(1, MINOR_TICK_COUNT):
                 minx = x + j * base / MINOR_TICK_COUNT
-                minor_lines.append(QLineF(minx, rect.top()+(TICKMARK_BAR_HEIGHT - MINORTICK_HEIGHT)/self.view_scale, minx, rect.top()+TICKMARK_BAR_HEIGHT/self.view_scale))
+                minor_lines.append(QLineF(minx, rect.bottom()-(TICKMARK_BAR_HEIGHT - MINORTICK_HEIGHT)/self.view_scale, minx, rect.bottom()-TICKMARK_BAR_HEIGHT/self.view_scale))
 
             # add tick texts
             if i >= len(self._markTextItem):
@@ -103,7 +103,7 @@ class MarkLine(QGraphicsObject):
                 self._markTextItem.append(item)
             else:
                 item = self._markTextItem[i]
-            y = rect.top() + 10 / self.view_scale
+            y = rect.bottom() - 30 / self.view_scale
             item.setPos(QPointF(x, y))
             item.setPlainText("%g" % x)
             item.show()
@@ -142,12 +142,13 @@ class MarkLine(QGraphicsObject):
 
         # 水平线
         painter.setPen(boldPen)
-        painter.drawLine(QLineF(rect.left(), rect.top()+TICKMARK_BAR_HEIGHT/self.view_scale, rect.right(), rect.top()+TICKMARK_BAR_HEIGHT/self.view_scale))
+        painter.drawLine(QLineF(rect.left(), rect.bottom()-TICKMARK_BAR_HEIGHT/self.view_scale, rect.right(), rect.bottom()-TICKMARK_BAR_HEIGHT/self.view_scale))
 
     def boundingRect(self):
         """交互范围."""
         rect = self.view.getViewRect()
-        newRect = QRectF(rect.left(), rect.top(), rect.width(), TICKMARK_BAR_HEIGHT/self.view_scale)
+        height = TICKMARK_BAR_HEIGHT/self.view_scale
+        newRect = QRectF(rect.left(), rect.bottom() - height, rect.width(), height)
         return newRect
 
     def getViewScale(self):
