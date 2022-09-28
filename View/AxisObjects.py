@@ -42,6 +42,9 @@ TRACK_BORDER_COLOR = QColor("#202020")
 class MarkLine(QGraphicsObject):
     """docstring for MarkLine: 刻度线."""
     TEXTANGLE = 0
+    MAJORTICK_COLOR = QColor(112, 112, 112, 255)
+    MINORTICK_COLOR = QColor(112, 112, 112, 102)
+
     def __init__(self, view):
         super(MarkLine, self).__init__()
         self.view = view
@@ -141,31 +144,46 @@ class MarkLine(QGraphicsObject):
         self.updateMark(force=True)
         self.update()
 
-
-    def paint(self, painter, option, widget):
-        """绘制刻度线."""
-        self.updateMark()
+    def paintBackground(self, painter):
         # 背景色
         # self.
         rect = self.boundingRect()
         painter.pen().setWidth(0)
         painter.fillRect(rect, self.brush)
 
+    def paintMinorTick(self, painter):
         # 细刻度线
-        pen = QPen(QColor(112, 112, 112, 102))
+        pen = QPen(self.MINORTICK_COLOR)
         pen.setWidth(0)
         painter.setPen(pen)
         painter.drawLines(self._markLines)
 
+    def paintMajorTick(self, painter):
         # 粗刻度线
-        boldPen = QPen(QColor(112, 112, 112, 255))
+        boldPen = QPen(self.MAJORTICK_COLOR)
         boldPen.setWidth(0)
         painter.setPen(boldPen)
         painter.drawLines(self._markLinesBold)
 
-        # 水平线
+    def paintBorderLine(self, painter):
+        boldPen = QPen(self.MAJORTICK_COLOR)
+        boldPen.setWidth(0)
         painter.setPen(boldPen)
+        rect = self.boundingRect()
+        # 水平线
         painter.drawLine(self.getBorderLine(rect))
+
+    def paint(self, painter, option, widget):
+        """绘制刻度线."""
+        self.updateMark()
+
+        self.paintBackground(painter)
+
+        self.paintMinorTick(painter)
+
+        self.paintMajorTick(painter)
+
+        self.paintBorderLine(painter)
 
     def getBorderLine(self, rect):
         y = float(rect.bottom())-TICKMARK_BAR_HEIGHT/self.view_scale
@@ -226,3 +244,43 @@ class VerticalMarkLine(MarkLine):
         rect = self.view.getViewRect()
         x = rect.left() + 30 / self.view_scale
         return QPointF(x, a)
+
+
+class HShadowMarkLine(MarkLine):
+    MAJORTICK_COLOR = QColor(112, 112, 112, 128)
+    def __init__(self, view):
+        super(HShadowMarkLine, self).__init__(view)
+        self.setZValue(-200)
+
+    def paint(self, painter, option, widget):
+        """绘制刻度线."""
+        self.updateMark()
+
+        self.paintMajorTick(painter)
+
+    def paintMajorTick(self, painter):
+        # 粗刻度线
+        boldPen = QPen(self.MAJORTICK_COLOR,0, Qt.DotLine)
+        # boldPen.setWidth(0)
+        painter.setPen(boldPen)
+        painter.drawLines(self._markLinesBold)
+
+    def makeMajorLine(self, a):
+        rect = self.view.getViewRect()
+        return QLineF(a, rect.top(), a, rect.bottom())
+
+
+class VShadowMarkLine(HShadowMarkLine):
+    @property
+    def axisMin(self):
+        rect = self.view.getViewRect()
+        return rect.top()
+
+    @property
+    def axisMax(self):
+        rect = self.view.getViewRect()
+        return rect.bottom()
+
+    def makeMajorLine(self, a):
+        rect = self.view.getViewRect()
+        return QLineF(rect.left(), a, rect.right(), a)

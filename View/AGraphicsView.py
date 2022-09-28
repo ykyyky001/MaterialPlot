@@ -3,7 +3,7 @@ import PySide2.QtGui
 from PySide2.QtWidgets import QGraphicsScene, QGraphicsView
 from PySide2.QtCore import QPointF, QRectF, Qt
 from PySide2.QtGui import QTransform
-from .AxisObjects import MarkLine, VerticalMarkLine
+from .AxisObjects import MarkLine, VerticalMarkLine, VShadowMarkLine, HShadowMarkLine
 import math
 
 
@@ -20,12 +20,17 @@ class AGraphicsView(QGraphicsView):
         self.lastPos = QPointF(0, 0)
         self.setVerticalScrollBarPolicy(Qt.ScrollBarAlwaysOff)
         self.setHorizontalScrollBarPolicy(Qt.ScrollBarAlwaysOff)
+        self._hMarkline = self._vMarkline = self._hsMarkline = self._vsMarkline = None
 
     def initHelperItems(self):
         self._hMarkline = MarkLine(self)
         self._vMarkline = VerticalMarkLine(self)
+        self._hsMarkline = HShadowMarkLine(self)
+        self._vsMarkline = VShadowMarkLine(self)
         self.scene().addItem(self._hMarkline)
         self.scene().addItem(self._vMarkline)
+        self.scene().addItem(self._hsMarkline)
+        self.scene().addItem(self._vsMarkline)
 
     @property
     def initPos(self):
@@ -84,6 +89,8 @@ class AGraphicsView(QGraphicsView):
         # 刷新显示区域
         self._hMarkline.setViewScale(self.viewScale)
         self._vMarkline.setViewScale(self.viewScale)
+        self._hsMarkline.setViewScale(self.viewScale)
+        self._vsMarkline.setViewScale(self.viewScale)
 
         return super(AGraphicsView, self).wheelEvent(mouseEvent)
 
@@ -93,7 +100,11 @@ class AGraphicsView(QGraphicsView):
         self.viewPosInScene = self.initPos
         self.lastViewPosInScene = self.initPos
         self.lastPos = QPointF(0, 0)
-        self.scene().clear()
+        if self._hMarkline:
+            self.scene().removeItem(self._hMarkline)
+            self.scene().removeItem(self._vMarkline)
+            self.scene().removeItem(self._hsMarkline)
+            self.scene().removeItem(self._vsMarkline)
         self.initHelperItems()
         self.resetSceneRect()
 
@@ -113,3 +124,5 @@ class AGraphicsView(QGraphicsView):
         self.scene().update()
         self._hMarkline.update()
         self._vMarkline.update()
+        self._hsMarkline.update()
+        self._vsMarkline.update()
