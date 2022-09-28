@@ -3,7 +3,7 @@ import PySide2.QtGui
 from PySide2.QtWidgets import QGraphicsScene, QGraphicsView
 from PySide2.QtCore import QPointF, QRectF, Qt
 from PySide2.QtGui import QTransform
-from .AxisObjects import MarkLine
+from .AxisObjects import MarkLine, VerticalMarkLine
 import math
 
 
@@ -23,7 +23,9 @@ class AGraphicsView(QGraphicsView):
 
     def initHelperItems(self):
         self._hMarkline = MarkLine(self)
+        self._vMarkline = VerticalMarkLine(self)
         self.scene().addItem(self._hMarkline)
+        self.scene().addItem(self._vMarkline)
 
     @property
     def initPos(self):
@@ -42,6 +44,7 @@ class AGraphicsView(QGraphicsView):
         return super(AGraphicsView, self).mousePressEvent(mouseEvent)
 
     def getViewRect(self):
+        # todo: performance bottleneck
         return self.mapToScene(self.rect()).boundingRect()
 
     def mouseMoveEvent(self, mouseEvent):
@@ -80,6 +83,7 @@ class AGraphicsView(QGraphicsView):
 
         # 刷新显示区域
         self._hMarkline.setViewScale(self.viewScale)
+        self._vMarkline.setViewScale(self.viewScale)
 
         return super(AGraphicsView, self).wheelEvent(mouseEvent)
 
@@ -108,3 +112,4 @@ class AGraphicsView(QGraphicsView):
         self.setTransform(trans)
         self.scene().update()
         self._hMarkline.update()
+        self._vMarkline.update()
