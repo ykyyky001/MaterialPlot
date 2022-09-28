@@ -26,6 +26,7 @@ class MainWindow(QMainWindow):
         self.controller = AshbyGraphicsController(self.myScene, self.csv_fpath)
 
         self.pen = QPen(QColor(0,0,0))
+        self.ui.graphicsView.initHelperItems()
         self.ui.graphicsView.resetView()
 
     def connectSignals(self):
@@ -59,7 +60,7 @@ class MainWindow(QMainWindow):
         '''
         Draws all existing materials onto the plot.
         '''
-        self.controller.clearScene()
+        self.onActionClear()
         self.controller.drawAllMaterialEclipses()
 
     def onActionOpenCSV(self):

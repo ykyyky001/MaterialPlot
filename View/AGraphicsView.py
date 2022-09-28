@@ -3,6 +3,7 @@ import PySide2.QtGui
 from PySide2.QtWidgets import QGraphicsScene, QGraphicsView
 from PySide2.QtCore import QPointF, QRectF, Qt
 from PySide2.QtGui import QTransform
+from .AxisObjects import MarkLine
 import math
 
 
@@ -17,6 +18,12 @@ class AGraphicsView(QGraphicsView):
         self.viewPosInScene = self.initPos
         self.lastViewPosInScene = self.initPos
         self.lastPos = QPointF(0, 0)
+        self.setVerticalScrollBarPolicy(Qt.ScrollBarAlwaysOff)
+        self.setHorizontalScrollBarPolicy(Qt.ScrollBarAlwaysOff)
+
+    def initHelperItems(self):
+        self._hMarkline = MarkLine(self)
+        self.scene().addItem(self._hMarkline)
 
     @property
     def initPos(self):
@@ -33,6 +40,9 @@ class AGraphicsView(QGraphicsView):
             self.rightDrag = False
 
         return super(AGraphicsView, self).mousePressEvent(mouseEvent)
+
+    def getViewRect(self):
+        return self.mapToScene(self.rect()).boundingRect()
 
     def mouseMoveEvent(self, mouseEvent):
         if self.dragMode() == QGraphicsView.ScrollHandDrag:
@@ -67,6 +77,10 @@ class AGraphicsView(QGraphicsView):
         vec = QPointF(self.viewPosInScene - mousePos)
         self.lastViewPosInScene = self.viewPosInScene = mousePos + vec / scale
         self.resetSceneRect()
+
+        # 刷新显示区域
+        self._hMarkline.setViewScale(self.viewScale)
+
         return super(AGraphicsView, self).wheelEvent(mouseEvent)
 
     def resetView(self):
@@ -76,6 +90,7 @@ class AGraphicsView(QGraphicsView):
         self.lastViewPosInScene = self.initPos
         self.lastPos = QPointF(0, 0)
 
+        self.initHelperItems()
         self.resetSceneRect()
 
     def resetSceneRect(self):
@@ -91,3 +106,5 @@ class AGraphicsView(QGraphicsView):
         trans = QTransform()
         trans.scale(self.viewScale, self.viewScale)
         self.setTransform(trans)
+        self.scene().update()
+        self._hMarkline.update()

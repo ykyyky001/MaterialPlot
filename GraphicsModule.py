@@ -7,10 +7,12 @@ from PySide2.QtCore import QPointF
 from DataModel import AshbyModel, MaterialItem
 from AlgorithmUtils import ellipseHull
 
+
 class AshbyGraphicsController(object):
     def __init__(self, scene: QGraphicsScene, filename: str):
         self.scene = scene
         self.pen = QPen(QColor(0,0,0))
+        self.pen.setWidth(0)
         self.model = AshbyModel(filename)
         self.graphicItems = [] # not necessary at present, for further use
 
