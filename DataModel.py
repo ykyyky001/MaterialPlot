@@ -29,6 +29,13 @@ class MaterialItem(object):
               ", w ", self.w, ", h ", self.h,
               ", rotation ", self.rotation)
 
+class MeanColor(object):
+    def __init__(self, data: pd.Series):
+        self.meanR = float(data["Color_R"])
+        self.meanG = float(data["Color_G"])
+        self.meanB = float(data["Color_B"])
+        print("Family bubble has R ", self.meanR, ", G", self.meanG, ", B", self.meanB)
+
 
 class AshbyModel(object):
     def __init__(self, filename: str):
