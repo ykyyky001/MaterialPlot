@@ -73,8 +73,7 @@ class GraphicTransformer():
             # TODO(team): implement this
             pass
         else:
-            elps = simpleEllipse()
-            elps.initFromMatItem(item)
+            elps = simpleEllipse.initFromMatItem(item)
         return elps
 
 class AshbyGraphicsController(object):

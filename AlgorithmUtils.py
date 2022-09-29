@@ -4,19 +4,16 @@ from scipy.spatial import ConvexHull
 from DataModel import MaterialItem
 
 class simpleEllipse:
-    def __init__(self):
-        self.x = 0
-        self.y = 0
-        self.w = 0
-        self.h = 0
-        self.rotation = 0
+    def __init__(self, x, y, w, h, rotation):
+        self.x = x
+        self.y = y
+        self.w = w
+        self.h = h
+        self.rotation = rotation
 
-    def initFromMatItem(self, item: MaterialItem):
-        self.x = item.x
-        self.y = item.y
-        self.w = item.w
-        self.h = item.h
-        self.rotation = item.rotation
+    @staticmethod
+    def initFromMatItem(item: MaterialItem):
+        return simpleEllipse(item.x, item.y, item.w, item.h, item.rotation)
 
 
 def ellipseHull(ellipses: List[simpleEllipse], expand_ratio, step):
