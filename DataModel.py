@@ -71,7 +71,8 @@ class AshbyModel(object):
     def getCount(self):
         return len(self.data)
 
-    def getMeanColor(self, items: List[MaterialItem]):
+    @staticmethod
+    def getMeanColor(items: List[MaterialItem]):
         sum_r = 0
         sum_g = 0
         sum_b = 0
