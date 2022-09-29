@@ -20,7 +20,7 @@ class GraphicConfig():
         self.hull_sampling_step = 200
         self.log_scale = False
 
-    def update_config(self, expend_ratio: float, hull_sampling_step, int, log_scale: bool):
+    def update_config(self, expend_ratio: float, hull_sampling_step: int, log_scale: bool):
         self.expend_ratio = expend_ratio
         self.hull_sampling_step = hull_sampling_step
         self.log_scale = log_scale
@@ -67,6 +67,7 @@ class GraphicTransformer():
                             self.config.expend_ratio,
                             self.config.hull_sampling_step)
 
+    # Private
     def matToSimpleEllipse(self, item: MaterialItem):
         if self.config.log_scale:
             # TODO(team): implement this
