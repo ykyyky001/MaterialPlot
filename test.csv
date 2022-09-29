@@ -1,16 +1,16 @@
-Name,Param1,Param2_mean,Param2_sd,Param3_mean,Param3_sd,Param4,Type,Color_R,Color_G,Color_B
-316 Stainless Steel,7.99,193,20,600,100,20,Metal,255,255,0
-Iron,7.2,,,,,21,,,,
-Iron,7,,,,,25,,,,
-Iron,7.4,,,,,19.5,,,,
-Iron,6.8,,,,,18,,,,
-Brass,8.73,97,10,200,70,30,Metal,255,0,0
-Copper,8.9,115,20,150,100,70,Metal,255,127,0
-Titanium Alloy,4.4,114,20,880,50,,Metal,255,63,0
-Magnesium Alloy,1.74,45,10,160,40,,Metal,255,31,0
-PLA,1.4,4.1,0.5,60,5,,Plastic,0,255,0
-ABS,1.02,2,0.3,65,10,,Plastic,63,255,0
-PEEK,1.3,3.6,0.6,100,10,,Plastic,127,255,0
-Silica,2.64,74,5,1000,380,,Ceramic,0,63,255
-Silicon Carbide,3.21,400,90,3900,500,,Ceramic,0,127,255
-Hydroxyapatite,3.18,60,10,174,30,,Ceramic,0,0,255
+Name,Density,Modulus_mean,Modulus_sd,Strength_mean,Strength_sd,Thermal Conductivity,Type,Color_R,Color_G,Color_B
+316 Stainless Steel,7.99,193,20,600,100,15,Metal,255,255,0
+Iron,7.2,,,,,52,,,,
+Iron,7,,,,,52,,,,
+Iron,7.4,,,,,52,,,,
+Iron,6.8,,,,,52,,,,
+Brass,8.73,97,10,200,70,146,Metal,255,0,0
+Copper,8.9,115,20,150,100,391,Metal,255,127,0
+Titanium Alloy,4.4,114,20,880,50,6.7,Metal,255,63,0
+Magnesium Alloy,1.74,45,10,160,40,156,Metal,255,31,0
+PLA,1.4,4.1,0.5,60,5,0.13,Plastic,0,255,0
+ABS,1.02,2,0.3,65,10,0.16,Plastic,63,255,0
+PEEK,1.3,3.6,0.6,100,10,0.26,Plastic,127,255,0
+Silica,2.64,74,5,1000,380,0.9,Ceramic,0,63,255
+Silicon Carbide,3.21,400,90,3900,500,490,Ceramic,0,127,255
+Hydroxyapatite,3.18,60,10,174,30,1,Ceramic,0,0,255

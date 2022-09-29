@@ -9,10 +9,10 @@ class MaterialItem(object):
     """
     def __init__(self, data: pd.Series):
         # TODO(team): update the names for their real meanings.
-        self.x = float(data["Param2_mean"])
-        self.y = float(data["Param3_mean"])
-        self.w = float(data["Param2_sd"])
-        self.h = float(data["Param3_sd"])
+        self.x = float(data["Modulus_mean"])
+        self.y = float(data["Strength_mean"])
+        self.w = float(data["Modulus_sd"])
+        self.h = float(data["Strength_sd"])
         self.label = data["Name"]
         self.color_r = int(data["Color_R"])
         self.color_g = int(data["Color_G"])
