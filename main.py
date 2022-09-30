@@ -33,6 +33,7 @@ class MainWindow(QMainWindow):
         self.ui.graphicsView.resetView()
         self.ui.graphicsView.initHelperItems()
 
+
     def connectSignals(self):
         self.ui.Plot_Prop_Chrt.clicked.connect(self.onClickGenPropChrt)
         self.ui.Plot_sel_ln.clicked.connect(self.onClickPlotSelLn)
@@ -46,10 +47,17 @@ class MainWindow(QMainWindow):
         self.ui.actionPlotSelLn.triggered.connect(self.onClickPlotSelLn)
         self.ui.actionResetView.triggered.connect(self.onResetView)
         self.ui.actionFitView.triggered.connect(self.onFitView)
+        self.ui.buttonGroup.buttonToggled.connect(self.onAxisStyleChanged)
+        self.ui
 
     #
     # Button and menu functions, called upon UI interactions.
     #
+    def onAxisStyleChanged(self, _):
+        if self.ui.linearRadio.isChecked():
+            self.ui.graphicsView.changeAxisMode(0)
+        else:
+            self.ui.graphicsView.changeAxisMode(1)
     def onResetView(self):
         self.ui.graphicsView.resetView()
         app.processEvents()

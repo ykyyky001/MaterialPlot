@@ -33,6 +33,11 @@ MINORTICK_HEIGHT = 10.0
 
 MINOR_TICK_COUNT = 5
 
+# units of linearscale corresponding to logscale
+LOGSCALE_UNITS = 10.0
+LINEARSCALE_UNITS = 1000.0
+LINEAR_TO_LOG = LINEARSCALE_UNITS / LOGSCALE_UNITS
+
 # 轨道的边框颜色:
 TRACK_BORDER_COLOR = QColor("#202020")
 
@@ -48,7 +53,7 @@ class MarkLine(QGraphicsObject):
         self.view = view
         self.view_scale = 1.0  # 画布缩放倍率
         self.textitem = None
-        self._axisMode = MARKTRACK_MODE_LINEAR
+        self._axisMode = MARKTRACK_MODE_LOGSCALE
         self._markTextItem = []
         self._markLines = []
         self._markLinesBold = []
@@ -87,12 +92,34 @@ class MarkLine(QGraphicsObject):
         y = rect.bottom() - 30 / self.view_scale
         return QPointF(a, y)
 
-    def updateMark(self, force=False):
-        # 获取可视区域
-        rect = self.view.getViewRect()
-        if not force and self._viewRect == rect:
+    def getFloorLogTick(self, v, index=0):
+        if index == 0:
+            tickindex = math.floor(v / LINEAR_TO_LOG)
+            return 10 ** tickindex
+        else:
+            pass
+    def getCeilLogTick(self, v, index=0):
+        if index == 0:
+            tickindex = math.ceil(v / LINEAR_TO_LOG)
+            return 10 ** index
+
+    def logUpdateMark(self):
+        # hide all textitem first
+        for item in self._markTextItem:
+            item.hide()
+
+        lines = []
+        minor_lines = []
+        self._markLinesBold = lines
+        self._markLines = minor_lines
+        arange = self.axisMax - self.axisMin
+        if arange > LINEAR_TO_LOG * 5:
+            self.linearUpdateMark()
+        else:
             return
-        self._viewRect = rect
+        i = 0
+
+    def linearUpdateMark(self):
         arange = self.axisMax - self.axisMin
         divs = int(arange / 10 ** math.floor(math.log10(arange)))
         # divs: how many major ticks in view
@@ -136,9 +163,25 @@ class MarkLine(QGraphicsObject):
 
         self._markLinesBold = lines
         self._markLines = minor_lines
+    def updateMark(self, force=False):
+        # 获取可视区域
+        rect = self.view.getViewRect()
+        if not force and self._viewRect == rect:
+            return
+        self._viewRect = rect
+        if self._axisMode == MARKTRACK_MODE_LINEAR:
+            self.linearUpdateMark()
+        else:
+            self.logUpdateMark()
+    @staticmethod
+    def lin2log(v):
+        return 10 ** (v / LINEAR_TO_LOG)
 
     def getMarkText(self, a):
-        return "%g" % a
+        if self._axisMode == MARKTRACK_MODE_LINEAR:
+            return "%g" % a
+        else:
+            return "%g" % self.lin2log(a)
 
     def setAxisMode(self, mode):
         self._axisMode = mode

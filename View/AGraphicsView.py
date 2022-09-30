@@ -26,6 +26,14 @@ class AGraphicsView(QGraphicsView):
 
         self.graphicItems = []
 
+    def changeAxisMode(self, mode):
+        if self._hMarkline:
+            self._hMarkline.setAxisMode(mode)
+            self._vMarkline.setAxisMode(mode)
+            self._hsMarkline.setAxisMode(mode)
+            self._vsMarkline.setAxisMode(mode)
+            self.refreshMarks()
+
     def initHelperItems(self):
         self._hMarkline = MarkLine(self)
         self._vMarkline = VerticalMarkLine(self)
