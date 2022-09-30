@@ -17,14 +17,14 @@
    <layout class="QHBoxLayout" name="horizontalLayout" stretch="0,3">
     <item>
      <layout class="QGridLayout" name="gridLayout">
+      <property name="horizontalSpacing">
+       <number>6</number>
+      </property>
       <property name="leftMargin">
        <number>0</number>
       </property>
       <property name="topMargin">
        <number>0</number>
-      </property>
-      <property name="horizontalSpacing">
-       <number>6</number>
       </property>
       <item row="5" column="0" colspan="4">
        <widget class="QTabWidget" name="tabWidget">
@@ -109,7 +109,7 @@
            <rect>
             <x>0</x>
             <y>0</y>
-            <width>311</width>
+            <width>646</width>
             <height>131</height>
            </rect>
           </property>
@@ -216,7 +216,11 @@
        </widget>
       </item>
       <item row="4" column="0" colspan="4">
-       <widget class="QTreeView" name="treeView"/>
+       <widget class="TreeView" name="treeView">
+        <attribute name="headerVisible">
+         <bool>false</bool>
+        </attribute>
+       </widget>
       </item>
       <item row="3" column="3">
        <widget class="QPushButton" name="pushButton">
@@ -266,7 +270,7 @@
      <x>0</x>
      <y>0</y>
      <width>1384</width>
-     <height>24</height>
+     <height>26</height>
     </rect>
    </property>
    <widget class="QMenu" name="menuFile">
@@ -486,6 +490,11 @@
    <class>AGraphicsView</class>
    <extends>QGraphicsView</extends>
    <header location="global">AGraphicsView</header>
+  </customwidget>
+  <customwidget>
+   <class>TreeView</class>
+   <extends>QTreeView</extends>
+   <header location="global">TreeView</header>
   </customwidget>
  </customwidgets>
  <resources/>
