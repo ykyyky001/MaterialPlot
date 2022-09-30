@@ -167,6 +167,7 @@ class AshbyGraphicsController(object):
             self.pen = QPen(QColor(125, 125, 125, 50))
             self.brush = QBrush(QColor(r, g, b, 100))
             poly = self.scene.addPolygon(polygon, self.pen, self.brush)
+            poly.setZValue(-1)
             self.view.graphicItems.append(poly)
 
     def drawLine(self):
