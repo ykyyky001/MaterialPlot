@@ -6,6 +6,8 @@ from PySide2.QtGui import QTransform
 from .AxisObjects import MarkLine, VerticalMarkLine, VShadowMarkLine, HShadowMarkLine
 import math
 
+FIT_EXPAND_MARGIN_RATIO = 0.1
+
 
 class AGraphicsView(QGraphicsView):
     def __init__(self, parent):
@@ -22,6 +24,8 @@ class AGraphicsView(QGraphicsView):
         self.setHorizontalScrollBarPolicy(Qt.ScrollBarAlwaysOff)
         self._hMarkline = self._vMarkline = self._hsMarkline = self._vsMarkline = None
 
+        self.graphicItems = []
+
     def initHelperItems(self):
         self._hMarkline = MarkLine(self)
         self._vMarkline = VerticalMarkLine(self)
@@ -34,7 +38,7 @@ class AGraphicsView(QGraphicsView):
 
     @property
     def initPos(self):
-        return QPointF(1013 * 0.5, 948 * 0.5)
+        return QPointF(1013 * 0.5, -948 * 0.5)
 
     def mousePressEvent(self, mouseEvent):
         if mouseEvent.button() == Qt.LeftButton:
@@ -94,6 +98,34 @@ class AGraphicsView(QGraphicsView):
 
         return super(AGraphicsView, self).wheelEvent(mouseEvent)
 
+    def fitView(self):
+        if not self.graphicItems:
+            self.resetView()
+            return
+        rect = QRectF()
+        for item in self.graphicItems:
+            bb = item.boundingRect()
+            rect = rect.united(bb)
+        if rect.left() < rect.top():
+            rect.setTop(rect.left())
+        else:
+            rect.setLeft(rect.top())
+        if rect.right() < rect.bottom():
+            rect.setRight(rect.bottom())
+        else:
+            rect.setBottom(rect.right())
+        widthmargin = rect.width() * FIT_EXPAND_MARGIN_RATIO
+        rect.setWidth(rect.width() + widthmargin)
+        rect.setHeight(rect.height() + widthmargin)
+        rect.setTop(rect.top() - widthmargin * 0.8)
+        rect.setLeft(rect.left() - widthmargin * 0.8)
+        originrect = self.rect()
+        self.viewScale = originrect.height() / rect.height()
+        self.scaleValue = math.log(self.viewScale)
+        self.viewPosInScene = self.lastViewPosInScene = QPointF((rect.left() + rect.right()) * 0.5,
+                                                                (rect.top() + rect.bottom()) * 0.5)
+        self.resetSceneRect()
+
     def resetView(self):
         self.viewScale = 1.0
         self.scaleValue = 0
@@ -101,13 +133,20 @@ class AGraphicsView(QGraphicsView):
         self.lastViewPosInScene = self.initPos
         self.lastPos = QPointF(0, 0)
 
+        self.resetSceneRect()
+
+    def refreshMarks(self):
         # 刷新显示区域
         if self._hMarkline:
             self._hMarkline.setViewScale(self.viewScale)
             self._vMarkline.setViewScale(self.viewScale)
             self._hsMarkline.setViewScale(self.viewScale)
             self._vsMarkline.setViewScale(self.viewScale)
-        self.resetSceneRect()
+
+            self._hMarkline.update()
+            self._vMarkline.update()
+            self._hsMarkline.update()
+            self._vsMarkline.update()
 
     def resetSceneRect(self):
         rect = self.rect()
@@ -123,8 +162,4 @@ class AGraphicsView(QGraphicsView):
         trans.scale(self.viewScale, self.viewScale)
         self.setTransform(trans)
         self.scene().update()
-        if self._hMarkline:
-            self._hMarkline.update()
-            self._vMarkline.update()
-            self._hsMarkline.update()
-            self._vsMarkline.update()
+        self.refreshMarks()

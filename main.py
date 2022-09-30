@@ -45,12 +45,17 @@ class MainWindow(QMainWindow):
         self.ui.actionFamilyBubble.triggered.connect(self.onActionConvexHull)
         self.ui.actionPlotSelLn.triggered.connect(self.onClickPlotSelLn)
         self.ui.actionResetView.triggered.connect(self.onResetView)
+        self.ui.actionFitView.triggered.connect(self.onFitView)
 
     #
     # Button and menu functions, called upon UI interactions.
     #
     def onResetView(self):
         self.ui.graphicsView.resetView()
+        app.processEvents()
+
+    def onFitView(self):
+        self.ui.graphicsView.fitView()
         app.processEvents()
 
     def onActionHotReload(self):
@@ -68,6 +73,7 @@ class MainWindow(QMainWindow):
         '''
         self.onActionClear()
         self.controller.drawAllMaterialEclipses()
+        self.onFitView()
 
     def onActionOpenCSV(self):
         '''

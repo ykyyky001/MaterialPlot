@@ -83,6 +83,7 @@ class GraphicTransformer():
 class AshbyGraphicsController(object):
     def __init__(self, window, filename: str):
         self.window = window
+        self.view = window.ui.graphicsView
         self.scene = window.myScene
         self.tree = window.ui.treeView
         self.pen = QPen(QColor(0, 0, 0))
@@ -90,7 +91,7 @@ class AshbyGraphicsController(object):
         self.model = AshbyModel(filename)
         self.config = GraphicConfig()
         self.transformer = GraphicTransformer(self.config)
-        self.graphicItems = []
+
         self.initTreeView()
         self.connectSignals()
 
@@ -104,10 +105,10 @@ class AshbyGraphicsController(object):
         self.clearScene()
 
     def clearScene(self):
-        for item in self.graphicItems:
+        for item in self.view.graphicItems:
             self.scene.removeItem(item)
         # self.scene.clear()
-        self.graphicItems.clear()
+        self.view.graphicItems.clear()
 
     def drawAllMaterialEclipses(self):
         for name, info in self.model.getAllItems().items():
@@ -155,7 +156,7 @@ class AshbyGraphicsController(object):
         text.setPos(self.transformer.matCenterPoint(mat_item))
         elps.setRotation(self.transformer.matRotation(mat_item))
         text.setRotation(self.transformer.matRotation(mat_item))
-        self.graphicItems.extend((elps, text))
+        self.view.graphicItems.extend((elps, text))
 
     def drawHull(self, items: List[MaterialItem]):
         if len(items) > 0:
@@ -166,7 +167,7 @@ class AshbyGraphicsController(object):
             self.pen = QPen(QColor(125, 125, 125, 50))
             self.brush = QBrush(QColor(r, g, b, 100))
             poly = self.scene.addPolygon(polygon, self.pen, self.brush)
-            self.graphicItems.append(poly)
+            self.view.graphicItems.append(poly)
 
     def drawLine(self):
         # fake example, make your draw with your data
@@ -179,5 +180,5 @@ class AshbyGraphicsController(object):
             graphicitem = self.scene.addLine(mean - 10, std - 10, mean + 10, std + 10, self.pen)
             graphicitem2 = self.scene.addLine(mean - 10, std + 10, mean + 10, std - 10, self.pen)
 
-            self.graphicItems.append(graphicitem)  # not necessary at present, for further use
-            self.graphicItems.append(graphicitem2)  # not necessary at present, for further use
+            self.view.graphicItems.append(graphicitem)  # not necessary at present, for further use
+            self.view.graphicItems.append(graphicitem2)  # not necessary at present, for further use
