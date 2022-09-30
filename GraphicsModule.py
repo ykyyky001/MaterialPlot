@@ -77,15 +77,18 @@ class GraphicTransformer():
         return elps
 
 class AshbyGraphicsController(object):
-    def __init__(self, scene: QGraphicsScene, filename: str):
-        self.scene = scene
+    def __init__(self, window, filename: str):
+        self.window = window
+        self.scene = window.myScene
+        self.tree = window.ui.treeView
         self.pen = QPen(QColor(0,0,0))
         self.pen.setWidth(0)
         self.model = AshbyModel(filename)
         self.config = GraphicConfig()
         self.transformer = GraphicTransformer(self.config)
         self.graphicItems = []
-
+        self.initTreeView()
+        self.connectSignals()
     #
     # Public
     #
@@ -122,6 +125,22 @@ class AshbyGraphicsController(object):
     #
     # Private
     #
+    def connectSignals(self):
+        self.tree.OnSelectionChanged.connect(self.OnTreeSelectionChanged)
+    def OnTreeSelectionChanged(self, selections):
+        # todo: make it do someing!
+        print(selections)
+        # anotherway to get
+        selections = self.tree.getSelections()
+        print(selections)
+    def initTreeView(self):
+        self.tree.clearModel()
+        mattypes = self.model.getMaterialTypes()
+        items = self.model.getAllItems()
+        self.tree.addFamilies(mattypes) # not necessary at all
+        for item in items.values():
+            self.tree.addItem(item, item.family)
+
     def drawEllipse(self, mat_item: MaterialItem):
         brush = QBrush(QColor(mat_item.color_r, mat_item.color_g, mat_item.color_b, a = 255))
         elps = self.scene.addEllipse(self.transformer.matToSquare(mat_item), self.pen, brush)

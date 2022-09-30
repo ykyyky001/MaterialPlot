@@ -7,6 +7,7 @@ from PySide2.QtGui import QBrush, QPen, QColor, QFont
 import csv
 from GraphicsModule import AshbyGraphicsController
 from View.AGraphicsView import AGraphicsView
+from View.TreeView import TreeView
 app = None
 
 class MainWindow(QMainWindow):
@@ -17,13 +18,14 @@ class MainWindow(QMainWindow):
         file.close()
         loader = QUiLoader()
         loader.registerCustomWidget(AGraphicsView)
+        loader.registerCustomWidget(TreeView)
         self.ui = loader.load(file)
         self.connectSignals()
         self.ui.show()
         self.csv_fpath = None
         self.myScene = QGraphicsScene()
         self.ui.graphicsView.setScene(self.myScene)
-        self.controller = AshbyGraphicsController(self.myScene, self.csv_fpath)
+        self.controller = AshbyGraphicsController(self, self.csv_fpath)
 
         self.pen = QPen(QColor(0,0,0))
         self.ui.graphicsView.resetView()
@@ -55,7 +57,7 @@ class MainWindow(QMainWindow):
         from HotReloadModule import reloadModules
         reloadModules()
         from GraphicsModule import AshbyGraphicsController
-        self.controller = AshbyGraphicsController(self.myScene, self.csv_fpath)
+        self.controller = AshbyGraphicsController(self, self.csv_fpath)
 
     def onClickGenPropChrt(self):
         '''
@@ -72,7 +74,7 @@ class MainWindow(QMainWindow):
         filename, _ = QFileDialog.getOpenFileName(self, "Open CSV", filter="CSV Files (*.csv)")
         if filename:
             self.csv_fpath = filename
-        self.controller = AshbyGraphicsController(self.myScene, self.csv_fpath)
+        self.controller = AshbyGraphicsController(self, self.csv_fpath)
 
     def onClickPlotSelLn(self):
         self.controller.drawLine()

@@ -17,6 +17,7 @@ class MaterialItem(object):
         self.color_r = int(data["Color_R"])
         self.color_g = int(data["Color_G"])
         self.color_b = int(data["Color_B"])
+        self.family = data["Type"]
         #TODO(team): make sure the CSV column is consistent with this.
         if "rotation" in data.keys():
             self.rotation = data["rotation"]
@@ -33,6 +34,15 @@ class MaterialItem(object):
 class AshbyModel(object):
     def __init__(self, filename: str):
         self.data = self.initFromData(filename)
+        print(self.data)
+
+    def getMaterialTypes(self):
+        if "Type" not in self.data:
+            return []
+        return list(self.data["Type"].unique())
+
+    def getItemByType(self, typestr: str):
+        return self.getItemsByFamily("Type", typestr)
 
     def initFromData(self, filename: str):
         # TODO(team) calculate case2 mean&std and fill in the table
