@@ -131,13 +131,16 @@ class MarkLine(QGraphicsObject):
             else:
                 item = self._markTextItem[i]
             item.setPos(self.makeTextPos(a))
-            item.setPlainText("%g" % a)
+            item.setPlainText(self.getMarkText(a))
             item.show()
 
             a += base
 
         self._markLinesBold = lines
         self._markLines = minor_lines
+
+    def getMarkText(self, a):
+        return "%g" % a
 
     def setAxisMode(self, mode):
         self._axisMode = mode
@@ -219,7 +222,8 @@ class VerticalMarkLine(MarkLine):
     def getBorderLine(self, rect):
         x = float(rect.left()) + TICKMARK_BAR_WIDTH / self.view_scale
         return QLineF(x, rect.top(), x, rect.bottom())
-
+    def getMarkText(self, a):
+        return "%g" % -a
     @property
     def axisMin(self):
         rect = self.view.getViewRect()
