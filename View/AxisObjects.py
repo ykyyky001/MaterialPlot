@@ -31,7 +31,7 @@ TICKMARK_HEIGHT = 8
 MAJORTICK_HEIGHT = 19.0
 MINORTICK_HEIGHT = 10.0
 
-MINOR_TICK_COUNT = 5
+MINOR_TICK_COUNT = 10
 
 # units of linearscale corresponding to logscale
 LOGSCALE_UNITS = 10.0
@@ -82,8 +82,15 @@ class MarkLine(QGraphicsObject):
         return QLineF(a, rect.bottom() - (TICKMARK_BAR_HEIGHT - MAJORTICK_HEIGHT) / self.view_scale, a,
                       rect.bottom() - TICKMARK_BAR_HEIGHT / self.view_scale)
 
-    def makeMinorLine(self, a):
+    def transFormLogMinorCoord(self, a, basea=None, base=None):
+        if self._axisMode == MARKTRACK_MODE_LOGSCALE and basea is not None:
+            a = math.log10(a + 1) * base + basea
+        return a
+    def makeMinorLine(self, a, basea=None, base=None):
         rect = self.view.getViewRect()
+
+        a = self.transFormLogMinorCoord(a, basea, base)
+
         return QLineF(a, rect.bottom() - (TICKMARK_BAR_HEIGHT - MINORTICK_HEIGHT) / self.view_scale, a,
                       rect.bottom() - TICKMARK_BAR_HEIGHT / self.view_scale)
 
@@ -141,9 +148,13 @@ class MarkLine(QGraphicsObject):
             # calc major ticks
             lines.append(self.makeMajorLine(a))
             # calc minor ticks
-            for j in range(1, MINOR_TICK_COUNT):
-                mina = a + j * base / MINOR_TICK_COUNT
-                minor_lines.append(self.makeMinorLine(mina))
+            if self._axisMode == MARKTRACK_MODE_LINEAR:
+                for j in range(1, MINOR_TICK_COUNT):
+                    mina = a + j * base / MINOR_TICK_COUNT
+                    minor_lines.append(self.makeMinorLine(mina))
+            else:
+                for j in range(1, MINOR_TICK_COUNT - 1):
+                    minor_lines.append(self.makeMinorLine(j, a, base))
             # add tick texts
             if i >= len(self._markTextItem):
                 item = QGraphicsTextItem(self)
@@ -177,11 +188,14 @@ class MarkLine(QGraphicsObject):
     def lin2log(v):
         return 10 ** (v / LINEAR_TO_LOG)
 
-    def getMarkText(self, a):
+    def getVisualCoord(self, logiccoord):
         if self._axisMode == MARKTRACK_MODE_LINEAR:
-            return "%g" % a
+            return logiccoord
         else:
-            return "%g" % self.lin2log(a)
+            return self.lin2log(logiccoord)
+
+    def getMarkText(self, a):
+        return "%g" % self.getVisualCoord(a)
 
     def setAxisMode(self, mode):
         self._axisMode = mode
@@ -260,13 +274,16 @@ class VerticalMarkLine(MarkLine):
         width = TICKMARK_BAR_WIDTH / self.view_scale
         newRect = QRectF(rect.left(), rect.top(), width, rect.height())
         return newRect
-
+    def transFormLogMinorCoord(self, a, basea=None, base=None):
+        if self._axisMode == MARKTRACK_MODE_LOGSCALE and basea is not None:
+            a = (1 - math.log10(a + 1)) * base + basea
+        return a
     def getBorderLine(self, rect):
         x = float(rect.left()) + TICKMARK_BAR_WIDTH / self.view_scale
         return QLineF(x, rect.top(), x, rect.bottom())
 
     def getMarkText(self, a):
-        return "%g" % -a
+        return "%g" % self.getVisualCoord(-a)
 
     @property
     def axisMin(self):
@@ -283,8 +300,10 @@ class VerticalMarkLine(MarkLine):
         return QLineF(rect.left() + (TICKMARK_BAR_HEIGHT - MAJORTICK_HEIGHT) / self.view_scale, a,
                       rect.left() + TICKMARK_BAR_HEIGHT / self.view_scale, a)
 
-    def makeMinorLine(self, a):
+    def makeMinorLine(self, a, basea=None, base=None):
         rect = self.view.getViewRect()
+
+        a = self.transFormLogMinorCoord(a, basea, base)
         return QLineF(rect.left() + (TICKMARK_BAR_HEIGHT - MINORTICK_HEIGHT) / self.view_scale, a,
                       rect.left() + TICKMARK_BAR_HEIGHT / self.view_scale, a)
 
