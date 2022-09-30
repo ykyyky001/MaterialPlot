@@ -15,6 +15,7 @@ class GraphicConfig():
     '''
     Describe the plot features.
     '''
+
     def __init__(self):
         self.expend_ratio = 2.
         self.hull_sampling_step = 200
@@ -25,10 +26,12 @@ class GraphicConfig():
         self.hull_sampling_step = hull_sampling_step
         self.log_scale = log_scale
 
+
 class GraphicTransformer():
     '''
     Converts the coordinate-related features to the appropriate plot scale based on the config.
     '''
+
     def __init__(self, config: GraphicConfig):
         self.config = config
 
@@ -46,7 +49,7 @@ class GraphicTransformer():
             # TODO(team): implement this.
             pass
         else:
-            return QPointF(mat_item.x - mat_item.w / 2., mat_item.y  - mat_item.h / 2.)
+            return QPointF(mat_item.x - mat_item.w / 2., mat_item.y - mat_item.h / 2.)
 
     def matCenterPoint(self, mat_item: MaterialItem):
         if self.config.log_scale:
@@ -64,8 +67,8 @@ class GraphicTransformer():
 
     def getEllipseHull(self, items: List[MaterialItem]):
         return ellipseHull([self.matToSimpleEllipse(item) for item in items],
-                            self.config.expend_ratio,
-                            self.config.hull_sampling_step)
+                           self.config.expend_ratio,
+                           self.config.hull_sampling_step)
 
     # Private
     def matToSimpleEllipse(self, item: MaterialItem):
@@ -76,12 +79,13 @@ class GraphicTransformer():
             elps = simpleEllipse.initFromMatItem(item)
         return elps
 
+
 class AshbyGraphicsController(object):
     def __init__(self, window, filename: str):
         self.window = window
         self.scene = window.myScene
         self.tree = window.ui.treeView
-        self.pen = QPen(QColor(0,0,0))
+        self.pen = QPen(QColor(0, 0, 0))
         self.pen.setWidth(0)
         self.model = AshbyModel(filename)
         self.config = GraphicConfig()
@@ -89,6 +93,7 @@ class AshbyGraphicsController(object):
         self.graphicItems = []
         self.initTreeView()
         self.connectSignals()
+
     #
     # Public
     #
@@ -110,10 +115,10 @@ class AshbyGraphicsController(object):
 
     def drawFamilyHull(self):
         candidate_columns = self.model.getCandidateColumns()
-        #TODO(team): implement the actual selection logic.
+        # TODO(team): implement the actual selection logic.
         selected_column = candidate_columns[0]
         family_candidates = self.model.provideFamilyCandidateByColumn(selected_column)
-        #TODO(team): implement the actual selection logic.
+        # TODO(team): implement the actual selection logic.
         selected_family = family_candidates[0]
         items = self.model.getItemsByFamily(selected_column, selected_family).values()
         self.drawHull(items)
@@ -127,22 +132,24 @@ class AshbyGraphicsController(object):
     #
     def connectSignals(self):
         self.tree.OnSelectionChanged.connect(self.OnTreeSelectionChanged)
+
     def OnTreeSelectionChanged(self, selections):
         # todo: make it do someing!
         print(selections)
         # anotherway to get
         selections = self.tree.getSelections()
         print(selections)
+
     def initTreeView(self):
         self.tree.clearModel()
         mattypes = self.model.getMaterialTypes()
         items = self.model.getAllItems()
-        self.tree.addFamilies(mattypes) # not necessary at all
+        self.tree.addFamilies(mattypes)  # not necessary at all
         for item in items.values():
             self.tree.addItem(item, item.family)
 
     def drawEllipse(self, mat_item: MaterialItem):
-        brush = QBrush(QColor(mat_item.color_r, mat_item.color_g, mat_item.color_b, a = 255))
+        brush = QBrush(QColor(mat_item.color_r, mat_item.color_g, mat_item.color_b, a=255))
         elps = self.scene.addEllipse(self.transformer.matToSquare(mat_item), self.pen, brush)
         text = self.scene.addText(mat_item.label, QFont("Arial", 12, 2))
         text.setPos(self.transformer.matCenterPoint(mat_item))
@@ -169,10 +176,8 @@ class AshbyGraphicsController(object):
             mean = matitem.getMean("Param3")
             std = matitem.getStd("Param3")
             # draw a cross
-            graphicitem = self.scene.addLine(mean -10 , std - 10, mean + 10, std+10, self.pen)
-            graphicitem2 = self.scene.addLine(mean -10 , std + 10, mean + 10, std-10, self.pen)
+            graphicitem = self.scene.addLine(mean - 10, std - 10, mean + 10, std + 10, self.pen)
+            graphicitem2 = self.scene.addLine(mean - 10, std + 10, mean + 10, std - 10, self.pen)
 
-            self.graphicItems.append(graphicitem)	# not necessary at present, for further use
-            self.graphicItems.append(graphicitem2)	# not necessary at present, for further use
-
-
+            self.graphicItems.append(graphicitem)  # not necessary at present, for further use
+            self.graphicItems.append(graphicitem2)  # not necessary at present, for further use

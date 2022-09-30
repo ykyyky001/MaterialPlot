@@ -7,6 +7,7 @@ class MaterialItem(object):
     """
     Use it to describe your Material
     """
+
     def __init__(self, data: pd.Series):
         # TODO(team): update the names for their real meanings.
         self.x = float(data["Modulus_mean"])
@@ -18,7 +19,7 @@ class MaterialItem(object):
         self.color_g = int(data["Color_G"])
         self.color_b = int(data["Color_B"])
         self.family = data["Type"]
-        #TODO(team): make sure the CSV column is consistent with this.
+        # TODO(team): make sure the CSV column is consistent with this.
         if "rotation" in data.keys():
             self.rotation = data["rotation"]
         else:
@@ -30,6 +31,7 @@ class MaterialItem(object):
               "x ", self.x, ", y ", self.y,
               ", w ", self.w, ", h ", self.h,
               ", rotation ", self.rotation)
+
 
 class AshbyModel(object):
     def __init__(self, filename: str):
@@ -53,7 +55,7 @@ class AshbyModel(object):
         # remove na for compatibility now!
         df.dropna(inplace=True)
         return df
-    
+
     @staticmethod
     def convertToItem(df):
         items = {}
@@ -68,7 +70,7 @@ class AshbyModel(object):
         return self.convertToItem(self.data[self.data.Name == label])
 
     def getItemsByFamily(self, column: str, label: str):
-        return self.convertToItem(self.data[self.data[column]==label])
+        return self.convertToItem(self.data[self.data[column] == label])
 
     def provideFamilyCandidateByColumn(self, column_name: str):
         candidate = self.data[column_name].drop_duplicates()
@@ -93,9 +95,7 @@ class AshbyModel(object):
             sum_r += r
             sum_g += g
             sum_b += b
-        meanR = float(sum_r)/float(len(items))
-        meanG = float(sum_g)/float(len(items))
-        meanB = float(sum_b)/float(len(items))
+        meanR = float(sum_r) / float(len(items))
+        meanG = float(sum_g) / float(len(items))
+        meanB = float(sum_b) / float(len(items))
         return meanR, meanG, meanB
-        
-

@@ -38,7 +38,7 @@ class AGraphicsView(QGraphicsView):
 
     def mousePressEvent(self, mouseEvent):
         if mouseEvent.button() == Qt.LeftButton:
-           pass
+            pass
         elif mouseEvent.button() == Qt.MiddleButton:
             pass
         elif mouseEvent.button() == Qt.RightButton:
@@ -81,7 +81,7 @@ class AGraphicsView(QGraphicsView):
         #     self.scene().onViewScale(self.viewScale)
         scale = self.viewScale / oldScale
 
-        mousePos =self.mapToScene(mouseEvent.pos())
+        mousePos = self.mapToScene(mouseEvent.pos())
         vec = QPointF(self.viewPosInScene - mousePos)
         self.lastViewPosInScene = self.viewPosInScene = mousePos + vec / scale
         self.resetSceneRect()

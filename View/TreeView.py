@@ -6,6 +6,7 @@ from PySide2.QtCore import Signal
 
 class TreeView(QTreeView):
     OnSelectionChanged = Signal(list)
+
     def __init__(self, parent):
         super(TreeView, self).__init__(parent)
         self.model = TreeItemModel()

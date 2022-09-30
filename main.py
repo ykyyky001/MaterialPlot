@@ -8,7 +8,9 @@ import csv
 from GraphicsModule import AshbyGraphicsController
 from View.AGraphicsView import AGraphicsView
 from View.TreeView import TreeView
+
 app = None
+
 
 class MainWindow(QMainWindow):
     def __init__(self):
@@ -27,7 +29,7 @@ class MainWindow(QMainWindow):
         self.ui.graphicsView.setScene(self.myScene)
         self.controller = AshbyGraphicsController(self, self.csv_fpath)
 
-        self.pen = QPen(QColor(0,0,0))
+        self.pen = QPen(QColor(0, 0, 0))
         self.ui.graphicsView.resetView()
         self.ui.graphicsView.initHelperItems()
 
@@ -43,9 +45,10 @@ class MainWindow(QMainWindow):
         self.ui.actionFamilyBubble.triggered.connect(self.onActionConvexHull)
         self.ui.actionPlotSelLn.triggered.connect(self.onClickPlotSelLn)
         self.ui.actionResetView.triggered.connect(self.onResetView)
-#
-# Button and menu functions, called upon UI interactions.
-#
+
+    #
+    # Button and menu functions, called upon UI interactions.
+    #
     def onResetView(self):
         self.ui.graphicsView.resetView()
         app.processEvents()
@@ -83,7 +86,7 @@ class MainWindow(QMainWindow):
         print("Graph cleared.")
         self.controller.clearScene()
         self.ui.graphicsView.resetView()
-        
+
     def onActionConvexHull(self):
         self.controller.drawAllHull()
         # self.controller.drawFamilyHull()

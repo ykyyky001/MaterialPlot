@@ -9,7 +9,6 @@ import math
 MARKTRACK_MODE_LINEAR = 0
 MARKTRACK_MODE_LOGSCALE = 1
 
-
 MARKTRACK_HEIGHT = 40  # 刻度条的高度
 
 # 画布的宽度:
@@ -34,7 +33,6 @@ MINORTICK_HEIGHT = 10.0
 
 MINOR_TICK_COUNT = 5
 
-
 # 轨道的边框颜色:
 TRACK_BORDER_COLOR = QColor("#202020")
 
@@ -57,7 +55,7 @@ class MarkLine(QGraphicsObject):
         self._viewRect = None
 
         # 设置刻度线的颜色:
-        self.pen = QPen(QColor(0,0,0,0))
+        self.pen = QPen(QColor(0, 0, 0, 0))
         self.pen.setWidth(0)  # linewidth not zooming
         self.brush = QBrush(MARKTRACK_BG_COLOR, Qt.SolidPattern)
 
@@ -77,12 +75,12 @@ class MarkLine(QGraphicsObject):
     def makeMajorLine(self, a):
         rect = self.view.getViewRect()
         return QLineF(a, rect.bottom() - (TICKMARK_BAR_HEIGHT - MAJORTICK_HEIGHT) / self.view_scale, a,
-               rect.bottom() - TICKMARK_BAR_HEIGHT / self.view_scale)
+                      rect.bottom() - TICKMARK_BAR_HEIGHT / self.view_scale)
 
     def makeMinorLine(self, a):
         rect = self.view.getViewRect()
         return QLineF(a, rect.bottom() - (TICKMARK_BAR_HEIGHT - MINORTICK_HEIGHT) / self.view_scale, a,
-               rect.bottom() - TICKMARK_BAR_HEIGHT / self.view_scale)
+                      rect.bottom() - TICKMARK_BAR_HEIGHT / self.view_scale)
 
     def makeTextPos(self, a):
         rect = self.view.getViewRect()
@@ -100,7 +98,7 @@ class MarkLine(QGraphicsObject):
         # divs: how many major ticks in view
         if divs < 2:
             divs *= 10
-            base = 10 ** (math.floor(math.log10(arange))-1)
+            base = 10 ** (math.floor(math.log10(arange)) - 1)
         else:
             base = 10 ** (math.floor(math.log10(arange)))
         # base: 0.1 1 10 100, etc
@@ -189,13 +187,13 @@ class MarkLine(QGraphicsObject):
         self.paintBorderLine(painter)
 
     def getBorderLine(self, rect):
-        y = float(rect.bottom())-TICKMARK_BAR_HEIGHT/self.view_scale
+        y = float(rect.bottom()) - TICKMARK_BAR_HEIGHT / self.view_scale
         return QLineF(rect.left(), y, rect.right(), y)
 
     def boundingRect(self):
         """交互范围."""
         rect = self.view.getViewRect()
-        height = TICKMARK_BAR_HEIGHT/self.view_scale
+        height = TICKMARK_BAR_HEIGHT / self.view_scale
         newRect = QRectF(rect.left(), rect.bottom() - height, rect.width(), height)
         return newRect
 
@@ -212,6 +210,7 @@ class MarkLine(QGraphicsObject):
 
 class VerticalMarkLine(MarkLine):
     TEXTANGLE = 90
+
     def boundingRect(self):
         """交互范围."""
         rect = self.view.getViewRect()
@@ -222,8 +221,10 @@ class VerticalMarkLine(MarkLine):
     def getBorderLine(self, rect):
         x = float(rect.left()) + TICKMARK_BAR_WIDTH / self.view_scale
         return QLineF(x, rect.top(), x, rect.bottom())
+
     def getMarkText(self, a):
         return "%g" % -a
+
     @property
     def axisMin(self):
         rect = self.view.getViewRect()
@@ -237,12 +238,12 @@ class VerticalMarkLine(MarkLine):
     def makeMajorLine(self, a):
         rect = self.view.getViewRect()
         return QLineF(rect.left() + (TICKMARK_BAR_HEIGHT - MAJORTICK_HEIGHT) / self.view_scale, a,
-               rect.left() + TICKMARK_BAR_HEIGHT / self.view_scale, a)
+                      rect.left() + TICKMARK_BAR_HEIGHT / self.view_scale, a)
 
     def makeMinorLine(self, a):
         rect = self.view.getViewRect()
         return QLineF(rect.left() + (TICKMARK_BAR_HEIGHT - MINORTICK_HEIGHT) / self.view_scale, a,
-               rect.left() + TICKMARK_BAR_HEIGHT / self.view_scale, a)
+                      rect.left() + TICKMARK_BAR_HEIGHT / self.view_scale, a)
 
     def makeTextPos(self, a):
         rect = self.view.getViewRect()
@@ -252,6 +253,7 @@ class VerticalMarkLine(MarkLine):
 
 class HShadowMarkLine(MarkLine):
     MAJORTICK_COLOR = QColor(112, 112, 112, 128)
+
     def __init__(self, view):
         super(HShadowMarkLine, self).__init__(view)
         self.setZValue(-200)
@@ -264,7 +266,7 @@ class HShadowMarkLine(MarkLine):
 
     def paintMajorTick(self, painter):
         # 粗刻度线
-        boldPen = QPen(self.MAJORTICK_COLOR,0, Qt.DotLine)
+        boldPen = QPen(self.MAJORTICK_COLOR, 0, Qt.DotLine)
         # boldPen.setWidth(0)
         painter.setPen(boldPen)
         painter.drawLines(self._markLinesBold)

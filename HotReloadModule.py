@@ -8,12 +8,12 @@ ModuleNames = ["GraphicsModule", "main", "DataModel", 'AlgorithmUtils']
 
 
 def reloadModules():
-	gcdisable()
-	for name in ModuleNames:
-		if name in sys.modules:
-			sys.modules.pop(name)
+    gcdisable()
+    for name in ModuleNames:
+        if name in sys.modules:
+            sys.modules.pop(name)
 
-	for name in ModuleNames:
-		importlib.import_module(name)
-	gcenable()
-	gccollect()
+    for name in ModuleNames:
+        importlib.import_module(name)
+    gcenable()
+    gccollect()
