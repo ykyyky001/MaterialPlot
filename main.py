@@ -48,11 +48,17 @@ class MainWindow(QMainWindow):
         self.ui.actionResetView.triggered.connect(self.onResetView)
         self.ui.actionFitView.triggered.connect(self.onFitView)
         self.ui.buttonGroup.buttonToggled.connect(self.onAxisStyleChanged)
-        self.ui
+        self.ui.actionAxes.triggered.connect(self.onDefineAxes)
 
     #
     # Button and menu functions, called upon UI interactions.
     #
+
+    def onDefineAxes(self):
+        from DataModel import AshbyModel
+        AshbyModel.addProperty()
+        #how to just run the addProperty in AshbyModel? it just need the data in AshbyModel class. but nothing here
+
     def onAxisStyleChanged(self, _):
         if self.ui.linearRadio.isChecked():
             self.ui.graphicsView.changeAxisMode(0)

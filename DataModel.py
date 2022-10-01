@@ -69,6 +69,11 @@ class AshbyModel(object):
         df.dropna(inplace=True)
         return df
 
+    def addProperty(self):
+        self.data["Modulus/Density_mean"] = (self.data["Modulus_mean"] / self.data["Density"])
+        self.data["Modulus/Density_sd"] = (self.data["Modulus_sd"] / self.data["Density"])
+        print(self.data)
+
     @staticmethod
     def convertToItem(df):
         items = {}
