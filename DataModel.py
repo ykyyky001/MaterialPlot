@@ -9,7 +9,6 @@ class MaterialItem(object):
     """
 
     def __init__(self, data: pd.Series):
-        # TODO(team): update the names for their real meanings.
         self.x = float(data["Modulus_mean"])
         self.y = float(data["Strength_mean"])
         self.w = float(data["Modulus_sd"])
@@ -19,12 +18,10 @@ class MaterialItem(object):
         self.color_g = int(data["Color_G"])
         self.color_b = int(data["Color_B"])
         self.family = data["Type"]
-        # TODO(team): make sure the CSV column is consistent with this.
         if "rotation" in data.keys():
             self.rotation = data["rotation"]
         else:
             self.rotation = 0.0
-        self.printDebugString()
 
     def printDebugString(self):
         print("Load ", self.label, ": ",
@@ -47,9 +44,25 @@ class AshbyModel(object):
         return self.getItemsByFamily("Type", typestr)
 
     def initFromData(self, filename: str):
-        # TODO(team) calculate case2 mean&std and fill in the table
         if filename:
-            df = pd.read_csv(filename)
+            temp_df = pd.read_csv(filename)
+            # Find the numerical and string columns.
+            string_columns = []
+            numeric_columns = []
+            for column in temp_df.columns:
+                if isinstance(temp_df[column][0], float):
+                    numeric_columns.append(column)
+                else:
+                    string_columns.append(column)
+            # Use the first column to group different samples from the same material.
+            df = pd.DataFrame()
+            for name, sub_df in temp_df.groupby(temp_df.columns[0]):
+                # Calculate the mean among all numeric columns.
+                avg_series = sub_df.loc[:, numeric_columns].mean(axis=0, skipna=True)
+                # Take the first row to capture descriptive features in string columns.
+                avg_series = avg_series.append(sub_df[string_columns].iloc[0].squeeze())
+                df = df.append(avg_series.to_frame().T)
+
         else:
             df = pd.DataFrame()
         # remove na for compatibility now!

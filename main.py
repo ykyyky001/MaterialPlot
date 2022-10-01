@@ -73,6 +73,7 @@ class MainWindow(QMainWindow):
         from HotReloadModule import reloadModules
         reloadModules()
         from GraphicsModule import AshbyGraphicsController
+        from DataModel import AshbyModel
         self.controller = AshbyGraphicsController(self, self.csv_fpath)
 
     def onClickGenPropChrt(self):
