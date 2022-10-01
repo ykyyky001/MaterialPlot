@@ -2,8 +2,8 @@
 from math import log
 from typing import List
 
-from PySide2.QtCore import QRectF, QPointF
-from PySide2.QtWidgets import QGraphicsScene
+import numpy as np
+from PySide2.QtCore import QRectF
 from PySide2.QtGui import QBrush, QPen, QColor, QFont, QPolygonF
 from PySide2.QtCore import QPointF
 
@@ -30,6 +30,7 @@ class GraphicConfig():
 class GraphicTransformer():
     '''
     Converts the coordinate-related features to the appropriate plot scale based on the config.
+    Note the final Qt objects have negative y values to fit the y-axis style in the plot.
     '''
 
     def __init__(self, config: GraphicConfig):
@@ -41,7 +42,7 @@ class GraphicTransformer():
             pass
         else:
             return QRectF(mat_item.x - mat_item.w / 2.,
-                          mat_item.y - mat_item.h / 2.,
+                          self.negY(mat_item.y + mat_item.h / 2.),
                           mat_item.w, mat_item.h)
 
     def matUpperLeftPoint(self, mat_item: MaterialItem):
@@ -49,14 +50,14 @@ class GraphicTransformer():
             # TODO(team): implement this.
             pass
         else:
-            return QPointF(mat_item.x - mat_item.w / 2., mat_item.y - mat_item.h / 2.)
+            return QPointF(mat_item.x - mat_item.w / 2., self.negY(mat_item.y + mat_item.h / 2.))
 
     def matCenterPoint(self, mat_item: MaterialItem):
         if self.config.log_scale:
             # TODO(team): implement this.
             pass
         else:
-            return QPointF(mat_item.x, mat_item.y)
+            return QPointF(mat_item.x, self.negY(mat_item.y))
 
     # TODO(team): implement this
     def matRotation(self, mat_item: MaterialItem):
@@ -66,9 +67,10 @@ class GraphicTransformer():
             return mat_item.rotation
 
     def getEllipseHull(self, items: List[MaterialItem]):
-        return ellipseHull([self.matToSimpleEllipse(item) for item in items],
+        nature_hull = ellipseHull([self.matToSimpleEllipse(item) for item in items],
                            self.config.expend_ratio,
                            self.config.hull_sampling_step)
+        return np.array([[pts[0], self.negY(pts[1])] for pts in nature_hull])
 
     # Private
     def matToSimpleEllipse(self, item: MaterialItem):
@@ -79,6 +81,9 @@ class GraphicTransformer():
             elps = simpleEllipse.initFromMatItem(item)
         return elps
 
+    @staticmethod
+    def negY(val):
+        return -val
 
 class AshbyGraphicsController(object):
     def __init__(self, window, filename: str):
