@@ -2,7 +2,7 @@
 import sys
 from PySide2.QtCore import QFile, QRectF, QPointF
 from PySide2.QtUiTools import QUiLoader
-from PySide2.QtWidgets import QApplication, QMainWindow, QGraphicsScene, QFileDialog, QTreeView
+from PySide2.QtWidgets import QApplication, QMainWindow, QGraphicsScene, QFileDialog, QTreeView, QDialog
 from PySide2.QtGui import QBrush, QPen, QColor, QFont
 import csv
 from GraphicsModule import AshbyGraphicsController
@@ -57,8 +57,15 @@ class MainWindow(QMainWindow):
     def onDefineAxes(self):
         available_columns = self.controller.model.getColumns()
         # TODO(kaiyang): add UI to actual handle the logic of column selection.
+        self.setAxes = setAxes
+        self.setAxes = self.launchPopup
+        self.newAxes = []
         self.controller.updateObjectsByAxis(x_column = available_columns[0],
                                             y_column = available_columns[1])
+
+    def launchPopup(self):
+        pop = Popup(item.text(), self)
+        pop.show()
 
     def onAxisStyleChanged(self, _):
         # Clear scene when the axis scale changes.
@@ -119,6 +126,23 @@ class MainWindow(QMainWindow):
     def onActionConvexHull(self):
         self.controller.drawAllHull()
         # self.controller.drawFamilyHull()
+
+class setAxes(QDialog):
+    def __init__(self):
+        super().__init__()
+        file = QFile("Axes.ui")
+        file.open(QFile.ReadOnly)
+        file.close()
+        loader = QUiLoader()
+        self.ui = loader.load(file)
+        self.connectSignals()
+        self.ui.show()
+        self.Main = MainWindow
+        self.ui.buttonBox.Ok.clicked.connect(self.passingInfo)
+        self.ui.bottonBox.Cancel.clicked.connet(self.close)
+    def passingInfo(self):
+        self.Main.
+        self.close
 
 
 if __name__ == '__main__':
