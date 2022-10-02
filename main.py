@@ -1,10 +1,12 @@
 # -*- coding:utf-8 -*-
 import sys
+from typing import List
+
 from PySide2.QtCore import QFile, QRectF, QPointF
 from PySide2.QtUiTools import QUiLoader
 from PySide2.QtWidgets import QApplication, QMainWindow, QGraphicsScene, QFileDialog, QTreeView, QDialog
 from PySide2.QtGui import QBrush, QPen, QColor, QFont
-import csv
+
 from GraphicsModule import AshbyGraphicsController
 from View.AGraphicsView import AGraphicsView
 from View.TreeView import TreeView
@@ -57,7 +59,7 @@ class MainWindow(QMainWindow):
     def onDefineAxes(self):
         available_columns = self.controller.model.getColumns()
         # TODO(kaiyang): add UI to actual handle the logic of column selection.
-        self.popupAxes = setAxes()
+        self.popupAxes = setAxesPopUp(available_columns)
         self.popupAxes.display()
         #how to ask the setAxes window to display?
         self.controller.updateObjectsByAxis(x_column = available_columns[0],
@@ -120,9 +122,9 @@ class MainWindow(QMainWindow):
         self.controller.drawAllHull()
         # self.controller.drawFamilyHull()
 
-class setAxes(QDialog):
+class setAxesPopUp(QDialog):
    
-    def __init__(self):
+    def __init__(self, column_candidates: List[str]):
         super().__init__()
         file = QFile("Axes.ui")
         file.open(QFile.ReadOnly)
@@ -133,7 +135,7 @@ class setAxes(QDialog):
         self.Main = MainWindow
         #need to populate the list from the column title, withouth the _mean/_sd
         #no sure what the index does.... maybe helpful maybe not
-        self.propList = ["Modulus", "Strength", "Density", "Thermal Conductivity"]
+        self.propList = self.columnCandidateFilter(column_candidates)
         self.ui.x_n.addItems(self.propList)
         self.ui.x_d.addItems(self.propList)
         self.ui.y_n.addItems(self.propList)
@@ -156,6 +158,10 @@ class setAxes(QDialog):
     def display(self):
         self.ui.show()
 
+    @staticmethod
+    def columnCandidateFilter(candidates: List[str]):
+        #TODO(ky): do something here.
+        return candidates
 
 if __name__ == '__main__':
     app = QApplication(sys.argv)
