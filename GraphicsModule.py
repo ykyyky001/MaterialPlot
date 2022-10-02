@@ -1,5 +1,5 @@
 # -*- coding:utf-8 -*-
-from math import log
+from math import log10
 from typing import List
 
 import numpy as np
@@ -19,12 +19,17 @@ class GraphicConfig():
     def __init__(self):
         self.expend_ratio = 2.
         self.hull_sampling_step = 200
-        self.log_scale = False
+        self.log_scale = True
 
-    def update_config(self, expend_ratio: float, hull_sampling_step: int, log_scale: bool):
-        self.expend_ratio = expend_ratio
-        self.hull_sampling_step = hull_sampling_step
-        self.log_scale = log_scale
+    def update_config(self, expend_ratio: float=None,
+                      hull_sampling_step: int=None, log_scale: bool=None):
+        # Updates can be optional. Only update the config values which are explicitly passed in.
+        if expend_ratio:
+            self.expend_ratio = expend_ratio
+        if hull_sampling_step:
+            self.hull_sampling_step = hull_sampling_step
+        if log_scale is not None:
+            self.log_scale = log_scale
 
 
 class GraphicTransformer():
@@ -37,53 +42,51 @@ class GraphicTransformer():
         self.config = config
 
     def matToSquare(self, mat_item: MaterialItem):
-        if self.config.log_scale:
-            # TODO(team): implement this.
-            pass
-        else:
-            return QRectF(mat_item.x - mat_item.w / 2.,
-                          self.negY(mat_item.y + mat_item.h / 2.),
-                          mat_item.w, mat_item.h)
+        elps = self.convertMatToSimpleEllipse(mat_item)
+        return QRectF(elps.upper_left_x, elps.upper_left_y, elps.w, elps.h)
 
     def matUpperLeftPoint(self, mat_item: MaterialItem):
-        if self.config.log_scale:
-            # TODO(team): implement this.
-            pass
-        else:
-            return QPointF(mat_item.x - mat_item.w / 2., self.negY(mat_item.y + mat_item.h / 2.))
+        elps = self.convertMatToSimpleEllipse(mat_item)
+        return QPointF(elps.upper_left_x, elps.upper_left_y)
 
     def matCenterPoint(self, mat_item: MaterialItem):
-        if self.config.log_scale:
-            # TODO(team): implement this.
-            pass
-        else:
-            return QPointF(mat_item.x, self.negY(mat_item.y))
+        elps = self.convertMatToSimpleEllipse(mat_item)
+        return QPointF(elps.x, elps.y)
 
-    # TODO(team): implement this
     def matRotation(self, mat_item: MaterialItem):
-        if self.config.log_scale:
-            pass
-        else:
-            return mat_item.rotation
+        elps = self.convertMatToSimpleEllipse(mat_item)
+        return elps.rotation
 
     def getEllipseHull(self, items: List[MaterialItem]):
-        nature_hull = ellipseHull([self.matToSimpleEllipse(item) for item in items],
+        return ellipseHull([self.convertMatToSimpleEllipse(item) for item in items],
                            self.config.expend_ratio,
                            self.config.hull_sampling_step)
-        return np.array([[pts[0], self.negY(pts[1])] for pts in nature_hull])
 
+    #
     # Private
-    def matToSimpleEllipse(self, item: MaterialItem):
+    #
+    def convertMatToSimpleEllipse(self, mat_item: MaterialItem):
+        '''
+        Convert an material item to a pure geometry object.
+        '''
+        upper_left_x = mat_item.x - mat_item.w / 2.
+        # Specific handling of y-coor (is a negative value) because we actually mark
+        # the neg-y area on the plot as pos-y for visualization purpose.
+        upper_left_y = - mat_item.y - mat_item.h / 2.
+        width = mat_item.w
+        height = mat_item.h
         if self.config.log_scale:
-            # TODO(team): implement this
-            pass
-        else:
-            elps = simpleEllipse.initFromMatItem(item)
-        return elps
+            # The ellipse/square in log scale is defined by the log of the original four corner points.
+            # Use the diff between the lower-right point and upper-left point to re-calculate
+            # the width and height.
+            width = log10(upper_left_x + width) - log10(upper_left_x)
+            height = log10(-upper_left_y) - log10(-(upper_left_y - height))
+            upper_left_x = log10(upper_left_x)
+            upper_left_y = -log10(-upper_left_y)
+        center_x = upper_left_x + width / 2.
+        center_y = upper_left_y + height / 2.
+        return simpleEllipse(center_x, center_y, width, height, mat_item.rotation)
 
-    @staticmethod
-    def negY(val):
-        return -val
 
 class AshbyGraphicsController(object):
     def __init__(self, window, filename: str):
@@ -103,8 +106,7 @@ class AshbyGraphicsController(object):
     #
     # Public
     #
-    # TODO(team): add UI to call this for online update.
-    def update_config(self, expend_ratio: float, hull_sampling_step: int, log_scale: bool):
+    def update_config(self, expend_ratio: float=None, hull_sampling_step: int=None, log_scale: bool=None):
         self.config.update_config(expend_ratio, hull_sampling_step, log_scale)
         self.transformer = GraphicTransformer(self.config)
         self.clearScene()
@@ -159,9 +161,12 @@ class AshbyGraphicsController(object):
     def drawEllipse(self, mat_item: MaterialItem):
         brush = QBrush(QColor(mat_item.color_r, mat_item.color_g, mat_item.color_b, a=255))
         elps = self.scene.addEllipse(self.transformer.matToSquare(mat_item), self.pen, brush)
-        text = self.scene.addText(mat_item.label, QFont("Arial", 12, 2))
-        text.setPos(self.transformer.matCenterPoint(mat_item))
         elps.setRotation(self.transformer.matRotation(mat_item))
+
+        #TODO(team): handle text in log scale. QFont cannot support pointSize < 1, which is alredy too large for our log object.
+        text = self.scene.addText(mat_item.label if not self.config.log_scale else "",
+                                  QFont("Arial", 12, 2))
+        text.setPos(self.transformer.matCenterPoint(mat_item))
         text.setRotation(self.transformer.matRotation(mat_item))
         self.view.graphicItems.extend((elps, text))
 
@@ -169,7 +174,6 @@ class AshbyGraphicsController(object):
         if len(items) > 0:
             r, g, b = self.model.getMeanColor(items)
             hull_v = self.transformer.getEllipseHull(items)
-            # i add the QLineEdit in UI called Exp_Ratio. How to call it here?
             polygon = QPolygonF(list(map(QPointF, *hull_v.T)))
             self.pen = QPen(QColor(125, 125, 125, 50))
             self.brush = QBrush(QColor(r, g, b, 100))

@@ -61,9 +61,15 @@ class MainWindow(QMainWindow):
                                             y_column = available_columns[1])
 
     def onAxisStyleChanged(self, _):
+        # Clear scene when the axis scale changes.
+        # TODO(tienan): automatically update the objects instead of clean.
+        self.controller.clearScene()
+
         if self.ui.linearRadio.isChecked():
+            self.controller.update_config(log_scale=False)
             self.ui.graphicsView.changeAxisMode(0)
         else:
+            self.controller.update_config(log_scale=True)
             self.ui.graphicsView.changeAxisMode(1)
 
     def onResetView(self):

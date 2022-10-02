@@ -1,21 +1,26 @@
 import numpy as np
+from math import log10
 from typing import List
+
 from scipy.spatial import ConvexHull
+
 from DataModel import MaterialItem
 
 
 class simpleEllipse:
+    '''
+    A class to describe the pure geometry information of an ellipse.
+    '''
     def __init__(self, x, y, w, h, rotation):
         self.x = x
         self.y = y
         self.w = w
         self.h = h
         self.rotation = rotation
-
-    @staticmethod
-    def initFromMatItem(item: MaterialItem):
-        return simpleEllipse(item.x, item.y, item.w, item.h, item.rotation)
-
+        # Describe the upper-left point of the bounding rectangle of the ellipse.
+        # TODO(team): handle this when rotation is not zero.
+        self.upper_left_x = x - w / 2.
+        self.upper_left_y = y - h / 2.
 
 def ellipseHull(ellipses: List[simpleEllipse], expand_ratio, step):
     if len(ellipses) == 0:
