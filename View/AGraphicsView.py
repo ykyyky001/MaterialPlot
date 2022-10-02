@@ -1,6 +1,6 @@
 # -*- coding:utf-8 -*-
 import PySide2.QtGui
-from PySide2.QtWidgets import QGraphicsScene, QGraphicsView
+from PySide2.QtWidgets import QGraphicsScene, QGraphicsView, QGraphicsTextItem
 from PySide2.QtCore import QPointF, QRectF, Qt
 from PySide2.QtGui import QTransform
 from .AxisObjects import MarkLine, VerticalMarkLine, VShadowMarkLine, HShadowMarkLine
@@ -169,5 +169,8 @@ class AGraphicsView(QGraphicsView):
         trans = QTransform()
         trans.scale(self.viewScale, self.viewScale)
         self.setTransform(trans)
+        for item in self.graphicItems:
+            if isinstance(item, QGraphicsTextItem):
+                item.setScale(1.0 / self.viewScale)
         self.scene().update()
         self.refreshMarks()
