@@ -58,9 +58,10 @@ class GraphicTransformer():
         return elps.rotation
 
     def getEllipseHull(self, items: List[MaterialItem]):
-        return ellipseHull([self.convertMatToSimpleEllipse(item) for item in items],
+        hull_v = ellipseHull([self.convertMatToSimpleEllipse(item) for item in items],
                            self.config.expend_ratio,
                            self.config.hull_sampling_step)
+        return QPolygonF(list(map(QPointF, *hull_v.T)))
 
     #
     # Private
@@ -173,11 +174,9 @@ class AshbyGraphicsController(object):
     def drawHull(self, items: List[MaterialItem]):
         if len(items) > 0:
             r, g, b = self.model.getMeanColor(items)
-            hull_v = self.transformer.getEllipseHull(items)
-            polygon = QPolygonF(list(map(QPointF, *hull_v.T)))
             self.pen = QPen(QColor(125, 125, 125, 50))
             self.brush = QBrush(QColor(r, g, b, 100))
-            poly = self.scene.addPolygon(polygon, self.pen, self.brush)
+            poly = self.scene.addPolygon(self.transformer.getEllipseHull(items), self.pen, self.brush)
             poly.setZValue(-1)
             self.view.graphicItems.append(poly)
 
