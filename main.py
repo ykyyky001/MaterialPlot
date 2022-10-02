@@ -141,8 +141,9 @@ class setAxes(QDialog):
         self.ui.buttonBox.Ok.clicked.connect(self.passingInfo)
         self.ui.bottonBox.Cancel.clicked.connet(self.close)
     def passingInfo(self):
-        self.Main.
-        self.close
+        pass
+        # self.Main.
+        # self.close
 
 
 if __name__ == '__main__':
