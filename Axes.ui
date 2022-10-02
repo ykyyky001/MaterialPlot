@@ -11,7 +11,7 @@
    </rect>
   </property>
   <property name="windowTitle">
-   <string>Dialog</string>
+   <string>set Axes</string>
   </property>
   <widget class="QDialogButtonBox" name="buttonBox">
    <property name="geometry">
@@ -40,10 +40,10 @@
    </property>
    <layout class="QGridLayout" name="gridLayout">
     <item row="1" column="6" rowspan="4">
-     <widget class="QComboBox" name="y_denominator"/>
+     <widget class="QComboBox" name="y_d"/>
     </item>
     <item row="1" column="8" rowspan="4">
-     <widget class="QLineEdit" name="y_denomenator_exp"/>
+     <widget class="QLineEdit" name="y_dExp"/>
     </item>
     <item row="1" column="5" rowspan="4">
      <widget class="QLabel" name="label_5">
@@ -60,7 +60,7 @@
      </widget>
     </item>
     <item row="1" column="3" rowspan="4" colspan="2">
-     <widget class="QLineEdit" name="y_numerator_exp"/>
+     <widget class="QLineEdit" name="y_nExp"/>
     </item>
     <item row="0" column="5">
      <widget class="QLabel" name="label_4">
@@ -70,13 +70,13 @@
      </widget>
     </item>
     <item row="0" column="6">
-     <widget class="QComboBox" name="x_denominator"/>
+     <widget class="QComboBox" name="x_d"/>
     </item>
     <item row="0" column="8">
-     <widget class="QLineEdit" name="x_denomenator_exp"/>
+     <widget class="QLineEdit" name="x_dExp"/>
     </item>
     <item row="1" column="1" rowspan="4">
-     <widget class="QComboBox" name="y_numerator"/>
+     <widget class="QComboBox" name="y_n"/>
     </item>
     <item row="0" column="2">
      <widget class="QLabel" name="label_3">
@@ -86,10 +86,10 @@
      </widget>
     </item>
     <item row="0" column="1">
-     <widget class="QComboBox" name="x_numerator"/>
+     <widget class="QComboBox" name="x_n"/>
     </item>
     <item row="0" column="3" colspan="2">
-     <widget class="QLineEdit" name="x_numerator_exp"/>
+     <widget class="QLineEdit" name="x_nExp"/>
     </item>
     <item row="0" column="0">
      <widget class="QLabel" name="label">

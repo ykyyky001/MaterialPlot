@@ -124,6 +124,7 @@ class MainWindow(QMainWindow):
         # self.controller.drawFamilyHull()
 
 class setAxes(QDialog):
+   
     def __init__(self):
         super().__init__()
         file = QFile("Axes.ui")
@@ -131,14 +132,30 @@ class setAxes(QDialog):
         file.close()
         loader = QUiLoader()
         self.ui = loader.load(file)
-        self.connectSignals()
         self.ui.show()
         self.Main = MainWindow
-        self.ui.buttonBox.Ok.clicked.connect(self.passingInfo)
-        self.ui.bottonBox.Cancel.clicked.connet(self.close)
+        #need to populate the list from the column title, withouth the _mean/_sd
+        #no sure what the index does.... maybe helpful maybe not
+        self.propList = ["Modulus", "Strength", "Density", "Thermal Conductivity"]
+        self.ui.x_n.addItems(self.propList)
+        self.ui.x_d.addItems(self.propList)
+        self.ui.y_n.addItems(self.propList)
+        self.ui.y_d.addItems(self.propList)
+        self.ui.buttonBox.accepted.connect(self.passingInfo)
+        self.ui.buttonBox.rejected.connect(self.close)
     def passingInfo(self):
         #here read users input and bring back the info of x and y axes
-        self.close
+        #n stands for numerator, d stands for denominator
+        x_n = self.ui.x_n.currentText()
+        y_n = self.ui.y_n.currentText()
+        x_d = self.ui.x_d.currentText()
+        y_d = self.ui.y_d.currentText()
+        self.newX = [x_n, self.ui.x_nExp.text(),x_d, self.ui.x_dExp.text()]
+        self.newY = [y_n, self.ui.y_nExp.text(),y_d, self.ui.y_dExp.text()]
+        print(self.newX)
+        print(self.newY)
+        return self.newX, self.newY 
+        
     def display(self):
         self.ui.show()
 
