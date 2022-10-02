@@ -112,16 +112,14 @@ class AGraphicsView(QGraphicsView):
             return
         rect = QRectF()
         for item in self.graphicItems:
+            if isinstance(item, QGraphicsTextItem):
+                continue
             bb = item.boundingRect()
             rect = rect.united(bb)
-        if rect.left() < rect.top():
-            rect.setTop(rect.left())
+        if rect.width() < rect.height():
+            rect.setWidth(rect.height())
         else:
-            rect.setLeft(rect.top())
-        if rect.right() < rect.bottom():
-            rect.setRight(rect.bottom())
-        else:
-            rect.setBottom(rect.right())
+            rect.setHeight(rect.width())
         widthmargin = rect.width() * FIT_EXPAND_MARGIN_RATIO
         rect.setWidth(rect.width() + widthmargin)
         rect.setHeight(rect.height() + widthmargin)
