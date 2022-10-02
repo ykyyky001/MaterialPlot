@@ -137,16 +137,10 @@ class setAxes(QDialog):
         self.ui.buttonBox.Ok.clicked.connect(self.passingInfo)
         self.ui.bottonBox.Cancel.clicked.connet(self.close)
     def passingInfo(self):
-<<<<<<< HEAD
         #here read users input and bring back the info of x and y axes
         self.close
     def display(self):
         self.ui.show()
-=======
-        pass
-        # self.Main.
-        # self.close
->>>>>>> d65d030abff2ac9d60e49d8de84afa4c497a279c
 
 
 if __name__ == '__main__':
