@@ -99,32 +99,66 @@ class MarkLine(QGraphicsObject):
         y = rect.bottom() - 30 / self.view_scale
         return QPointF(a, y)
 
-    def getFloorLogTick(self, v, index=0):
-        if index == 0:
-            tickindex = math.floor(v / LINEAR_TO_LOG)
-            return 10 ** tickindex
-        else:
-            pass
-    def getCeilLogTick(self, v, index=0):
-        if index == 0:
-            tickindex = math.ceil(v / LINEAR_TO_LOG)
-            return 10 ** index
+    def getLogLevel(self):
+        max, min = self.lin2log(self.axisMax) , self.lin2log(self.axisMin)
+        maxbase = math.ceil(math.log10(max))
+        minbase = math.floor(math.log10(min))
+        print(minbase, maxbase)
 
+    def _generateLogText(self, i, a):
+        # add tick texts
+        if i >= len(self._markTextItem):
+            item = QGraphicsTextItem(self)
+            item.setFont(TICKS_TEXT_FONT)
+            item.setDefaultTextColor(TICKS_TEXT_COLOR)
+            item.setZValue(0)
+            item.setRotation(self.TEXTANGLE)
+            item.setFlag(QGraphicsItem.ItemIgnoresTransformations)
+            self._markTextItem.append(item)
+        else:
+            item = self._markTextItem[i]
+        item.setPos(self.makeTextPos(self.log2lin(a)))
+        item.setPlainText(self.getMarkText(self.log2lin(a)))
+        item.show()
     def logUpdateMark(self):
-        # hide all textitem first
+        maxlog, minlog = self.lin2log(self.axisMax), self.lin2log(self.axisMin)
         for item in self._markTextItem:
             item.hide()
-
         lines = []
-        minor_lines = []
-        self._markLinesBold = lines
-        self._markLines = minor_lines
-        arange = self.axisMax - self.axisMin
-        if arange > LINEAR_TO_LOG * 5:
-            self.linearUpdateMark()
+        maxlogbase = math.log10(maxlog)
+        minlogbase = math.log10(minlog)
+        maxbase = math.ceil(maxlogbase)
+        minbase = math.floor(minlogbase)
+        div = maxbase - minbase
+        if div < 3:
+            # case2
+            minorbase = 10 ** math.floor(math.log10(mafxlog - minlog))
+            divs = int((maxlog - minlog)/minorbase)
+            if divs < 2:
+                divs *= 10
+                base = minorbase * 0.1
+            else:
+                base = minorbase
+            a = math.floor(minlog / base) * base
+            i = 0
+            while a < self.axisMax:
+                # calc major ticks
+                lines.append(self.makeMajorLine(self.log2lin(a)))
+                self._generateLogText(i, a)
+                i += 1
+                a += base
         else:
-            return
-        i = 0
+            i = 0
+            for j in range(minbase, maxbase):
+                ivalue = 10 ** j
+                # calc major ticks
+                lines.append(self.makeMajorLine(self.log2lin(ivalue)))
+                self._generateLogText(i, ivalue)
+                i += 1
+
+
+        self._markLinesBold = lines
+
 
     def linearUpdateMark(self):
         arange = self.axisMax - self.axisMin
@@ -148,7 +182,7 @@ class MarkLine(QGraphicsObject):
             # calc major ticks
             lines.append(self.makeMajorLine(a))
             # calc minor ticks
-            if self._axisMode == MARKTRACK_MODE_LINEAR:
+            if self._axisMode == MARKTRACK_MODE_LINEAR or base >= LINEARSCALE_UNITS:
                 for j in range(1, MINOR_TICK_COUNT):
                     mina = a + j * base / MINOR_TICK_COUNT
                     minor_lines.append(self.makeMinorLine(mina))
@@ -181,15 +215,21 @@ class MarkLine(QGraphicsObject):
             return
         self._viewRect = rect
         try:
-            if self._axisMode == MARKTRACK_MODE_LINEAR:
-                self.linearUpdateMark()
-            else:
+            arange = self.axisMax - self.axisMin
+            if self._axisMode == MARKTRACK_MODE_LOGSCALE and arange < LINEAR_TO_LOG * 2:
                 self.logUpdateMark()
+            else:
+                self.linearUpdateMark()
+
         except OverflowError:
             pass
     @staticmethod
     def lin2log(v):
         return 10 ** (v / LINEAR_TO_LOG)
+
+    @staticmethod
+    def log2lin(v):
+        return math.log10(v) * LINEAR_TO_LOG
 
     def getVisualCoord(self, logiccoord):
         if self._axisMode == MARKTRACK_MODE_LINEAR:
