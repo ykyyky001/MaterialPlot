@@ -21,7 +21,7 @@ class GraphicConfig():
         self.hull_sampling_step = 200
         self.log_scale = True
 
-    def update_config(self, expend_ratio: float=None,
+    def updateConfig(self, expend_ratio: float=None,
                       hull_sampling_step: int=None, log_scale: bool=None):
         # Updates can be optional. Only update the config values which are explicitly passed in.
         if expend_ratio:
@@ -100,6 +100,8 @@ class AshbyGraphicsController(object):
         self.model = AshbyModel(filename)
         self.config = GraphicConfig()
         self.transformer = GraphicTransformer(self.config)
+        # Store the semantic items which have been drawn on the plot, used when the config is updated.
+        self.semanticItems = []
 
         self.initTreeView()
         self.connectSignals()
@@ -107,16 +109,17 @@ class AshbyGraphicsController(object):
     #
     # Public
     #
-    def update_config(self, expend_ratio: float=None, hull_sampling_step: int=None, log_scale: bool=None):
-        self.config.update_config(expend_ratio, hull_sampling_step, log_scale)
+    def updateConfig(self, expend_ratio: float=None, hull_sampling_step: int=None, log_scale: bool=None):
+        self.config.updateConfig(expend_ratio, hull_sampling_step, log_scale)
         self.transformer = GraphicTransformer(self.config)
-        self.clearScene()
+        self.updateGraphicItems()
 
     def clearScene(self):
         for item in self.view.graphicItems:
             self.scene.removeItem(item)
         # self.scene.clear()
         self.view.graphicItems.clear()
+        self.semanticItems.clear()
 
     def drawAllMaterialEclipses(self):
         for name, info in self.model.getAllItems().items():
@@ -127,15 +130,15 @@ class AshbyGraphicsController(object):
         # TODO(team): implement the actual selection logic.
         selected_family = family_candidates[0]
         items = self.model.getItemsByFamily("Type", selected_family).values()
-        self.drawHull(items)
+        self.drawHull(list(items))
 
     def drawAllHull(self):
         items = self.model.getAllItems().values()
-        self.drawHull(items)
+        self.drawHull(list(items))
 
     def updateObjectsByAxis(self, x_column, y_column):
         #TODO(tienan): implement this.
-        #Adjust the transformer to allow the flexibility of different x,y seleciton.
+        #Adjust the transformer to allow the flexibility of different x,y selection.
         pass
 
     #
@@ -167,6 +170,10 @@ class AshbyGraphicsController(object):
         text = self.scene.addText(mat_item.label, QFont("Arial", 12, 2))
         text.setPos(self.transformer.matCenterPoint(mat_item))
         text.setRotation(self.transformer.matRotation(mat_item))
+        # Append semantic item info for re-draw.
+        # TODO(tienan): consider consolidate the two item caches together.
+        self.semanticItems.append(mat_item)
+        # Appen graphic item info for view adjustment.
         self.view.graphicItems.extend((elps, text))
 
     def drawHull(self, items: List[MaterialItem]):
@@ -176,6 +183,7 @@ class AshbyGraphicsController(object):
             self.brush = QBrush(QColor(r, g, b, 100))
             poly = self.scene.addPolygon(self.transformer.getEllipseHull(items), self.pen, self.brush)
             poly.setZValue(-1)
+            self.semanticItems.append(items)
             self.view.graphicItems.append(poly)
 
     def drawLine(self):
@@ -191,3 +199,20 @@ class AshbyGraphicsController(object):
 
             self.view.graphicItems.append(graphicitem)  # not necessary at present, for further use
             self.view.graphicItems.append(graphicitem2)  # not necessary at present, for further use
+
+
+    def updateGraphicItems(self):
+        '''
+        Iterates over the existing items and re-draw them with the latest config.
+        '''
+        prev_items = self.semanticItems.copy()
+        self.clearScene()
+        for item in prev_items:
+            print(item)
+            print(isinstance(item, list))
+            # If it is one item, draw the corresponding ellipse.
+            if isinstance(item, MaterialItem):
+                self.drawEllipse(item)
+            # If it is a list of items, draw their convex hull.
+            if isinstance(item, list):
+                self.drawHull(item)
