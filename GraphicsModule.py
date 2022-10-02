@@ -174,7 +174,7 @@ class AshbyGraphicsController(object):
     def drawHull(self, items: List[MaterialItem]):
         if len(items) > 0:
             r, g, b = self.model.getMeanColor(items)
-            self.pen = QPen(QColor(125, 125, 125, 50))
+            self.pen = QPen(QColor(125, 125, 125, 50), 0)
             self.brush = QBrush(QColor(r, g, b, 100))
             poly = self.scene.addPolygon(self.transformer.getEllipseHull(items), self.pen, self.brush)
             poly.setZValue(-1)
