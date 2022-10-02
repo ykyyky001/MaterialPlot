@@ -164,9 +164,7 @@ class AshbyGraphicsController(object):
         elps = self.scene.addEllipse(self.transformer.matToSquare(mat_item), self.pen, brush)
         elps.setRotation(self.transformer.matRotation(mat_item))
 
-        #TODO(team): handle text in log scale. QFont cannot support pointSize < 1, which is alredy too large for our log object.
-        text = self.scene.addText(mat_item.label if not self.config.log_scale else "",
-                                  QFont("Arial", 12, 2))
+        text = self.scene.addText(mat_item.label, QFont("Arial", 12, 2))
         text.setPos(self.transformer.matCenterPoint(mat_item))
         text.setRotation(self.transformer.matRotation(mat_item))
         self.view.graphicItems.extend((elps, text))
