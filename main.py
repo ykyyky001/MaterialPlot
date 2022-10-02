@@ -57,15 +57,11 @@ class MainWindow(QMainWindow):
     def onDefineAxes(self):
         available_columns = self.controller.model.getColumns()
         # TODO(kaiyang): add UI to actual handle the logic of column selection.
-        self.setAxes = setAxes
-        self.setAxes = self.launchPopup
-        self.newAxes = []
+        self.popupAxes = setAxes()
+        self.popupAxes.display()
+        #how to ask the setAxes window to display?
         self.controller.updateObjectsByAxis(x_column = available_columns[0],
                                             y_column = available_columns[1])
-
-    def launchPopup(self):
-        pop = Popup(item.text(), self)
-        pop.show()
 
     def onAxisStyleChanged(self, _):
         # Clear scene when the axis scale changes.
@@ -141,8 +137,10 @@ class setAxes(QDialog):
         self.ui.buttonBox.Ok.clicked.connect(self.passingInfo)
         self.ui.bottonBox.Cancel.clicked.connet(self.close)
     def passingInfo(self):
-        self.Main.
+        #here read users input and bring back the info of x and y axes
         self.close
+    def display(self):
+        self.ui.show()
 
 
 if __name__ == '__main__':
