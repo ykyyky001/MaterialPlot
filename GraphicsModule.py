@@ -120,18 +120,20 @@ class AshbyGraphicsController(object):
             self.drawEllipse(info)
 
     def drawFamilyHull(self):
-        candidate_columns = self.model.getCandidateColumns()
-        # TODO(team): implement the actual selection logic.
-        selected_column = candidate_columns[0]
-        family_candidates = self.model.provideFamilyCandidateByColumn(selected_column)
+        family_candidates = self.model.provideFamilyCandidateByColumn("Type")
         # TODO(team): implement the actual selection logic.
         selected_family = family_candidates[0]
-        items = self.model.getItemsByFamily(selected_column, selected_family).values()
+        items = self.model.getItemsByFamily("Type", selected_family).values()
         self.drawHull(items)
 
     def drawAllHull(self):
         items = self.model.getAllItems().values()
         self.drawHull(items)
+
+    def updateObjectsByAxis(self, x_column, y_column):
+        #TODO(tienan): implement this.
+        #Adjust the transformer to allow the flexibility of different x,y seleciton.
+        pass
 
     #
     # Private

@@ -55,15 +55,17 @@ class MainWindow(QMainWindow):
     #
 
     def onDefineAxes(self):
-        from DataModel import AshbyModel
-        AshbyModel.addProperty()
-        #how to just run the addProperty in AshbyModel? it just need the data in AshbyModel class. but nothing here
+        available_columns = self.controller.model.getColumns()
+        # TODO(kaiyang): add UI to actual handle the logic of column selection.
+        self.controller.updateObjectsByAxis(x_column = available_columns[0],
+                                            y_column = available_columns[1])
 
     def onAxisStyleChanged(self, _):
         if self.ui.linearRadio.isChecked():
             self.ui.graphicsView.changeAxisMode(0)
         else:
             self.ui.graphicsView.changeAxisMode(1)
+
     def onResetView(self):
         self.ui.graphicsView.resetView()
         app.processEvents()

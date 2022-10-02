@@ -44,6 +44,7 @@ class AshbyModel(object):
         return self.getItemsByFamily("Type", typestr)
 
     def initFromData(self, filename: str):
+        df = pd.DataFrame()
         if filename:
             temp_df = pd.read_csv(filename)
             # Find the numerical and string columns.
@@ -55,24 +56,26 @@ class AshbyModel(object):
                 else:
                     string_columns.append(column)
             # Use the first column to group different samples from the same material.
-            df = pd.DataFrame()
             for name, sub_df in temp_df.groupby(temp_df.columns[0]):
                 # Calculate the mean among all numeric columns.
                 avg_series = sub_df.loc[:, numeric_columns].mean(axis=0, skipna=True)
                 # Take the first row to capture descriptive features in string columns.
                 avg_series = avg_series.append(sub_df[string_columns].iloc[0].squeeze())
                 df = df.append(avg_series.to_frame().T)
+            df = self.addProperty(df)
 
-        else:
-            df = pd.DataFrame()
         # remove na for compatibility now!
         df.dropna(inplace=True)
         return df
 
-    def addProperty(self):
-        self.data["Modulus/Density_mean"] = (self.data["Modulus_mean"] / self.data["Density"])
-        self.data["Modulus/Density_sd"] = (self.data["Modulus_sd"] / self.data["Density"])
-        print(self.data)
+    @staticmethod
+    def addProperty(df):
+        '''
+        Manipulate to calculate additional terms from raw data.
+        '''
+        df["Modulus/Density_mean"] = (df["Modulus_mean"] / df["Density"])
+        df["Modulus/Density_sd"] = (df["Modulus_sd"] / df["Density"])
+        return df
 
     @staticmethod
     def convertToItem(df):
@@ -94,9 +97,8 @@ class AshbyModel(object):
         candidate = self.data[column_name].drop_duplicates()
         return candidate.values
 
-    def getCandidateColumns(self):
-        # TODO(ky/tn): a more regulated filter for column candidates.
-        return [column for column in self.data.columns if "Param" in column]
+    def getColumns(self):
+        return self.data.columns
 
     def getCount(self):
         return len(self.data)
