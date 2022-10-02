@@ -34,7 +34,7 @@ MINORTICK_HEIGHT = 10.0
 MINOR_TICK_COUNT = 10
 
 # units of linearscale corresponding to logscale
-LOGSCALE_UNITS = 10.0
+LOGSCALE_UNITS = 1000.0
 LINEARSCALE_UNITS = 1000.0
 LINEAR_TO_LOG = LINEARSCALE_UNITS / LOGSCALE_UNITS
 
@@ -51,7 +51,7 @@ class MarkLine(QGraphicsObject):
     def __init__(self, view):
         super(MarkLine, self).__init__()
         self.view = view
-        self.view_scale = 1.0  # 画布缩放倍率
+        self.view_scale = 100.0  # 画布缩放倍率
         self.textitem = None
         self._axisMode = MARKTRACK_MODE_LOGSCALE
         self._markTextItem = []
@@ -180,10 +180,13 @@ class MarkLine(QGraphicsObject):
         if not force and self._viewRect == rect:
             return
         self._viewRect = rect
-        if self._axisMode == MARKTRACK_MODE_LINEAR:
-            self.linearUpdateMark()
-        else:
-            self.logUpdateMark()
+        try:
+            if self._axisMode == MARKTRACK_MODE_LINEAR:
+                self.linearUpdateMark()
+            else:
+                self.logUpdateMark()
+        except OverflowError:
+            pass
     @staticmethod
     def lin2log(v):
         return 10 ** (v / LINEAR_TO_LOG)

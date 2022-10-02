@@ -13,8 +13,8 @@ class AGraphicsView(QGraphicsView):
     def __init__(self, parent):
         super(AGraphicsView, self).__init__(parent)
         # initialize
-        self.viewScale = 1.0
-        self.scaleValue = 0
+        self.viewScale = 100.0
+        self.scaleValue = math.log(self.viewScale)
         self.rightDrag = False
 
         self.viewPosInScene = self.initPos
@@ -46,7 +46,7 @@ class AGraphicsView(QGraphicsView):
 
     @property
     def initPos(self):
-        return QPointF(1013 * 0.5, -948 * 0.5)
+        return QPointF(0, 0)
 
     def mousePressEvent(self, mouseEvent):
         if mouseEvent.button() == Qt.LeftButton:
@@ -135,8 +135,8 @@ class AGraphicsView(QGraphicsView):
         self.resetSceneRect()
 
     def resetView(self):
-        self.viewScale = 1.0
-        self.scaleValue = 0
+        self.viewScale = 100.0
+        self.scaleValue = math.log(self.viewScale)
         self.viewPosInScene = self.initPos
         self.lastViewPosInScene = self.initPos
         self.lastPos = QPointF(0, 0)
