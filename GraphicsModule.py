@@ -173,7 +173,7 @@ class AshbyGraphicsController(object):
         # Append semantic item info for re-draw.
         # TODO(tienan): consider consolidate the two item caches together.
         self.semanticItems.append(mat_item)
-        # Appen graphic item info for view adjustment.
+        # Append graphic item info for view adjustment.
         self.view.graphicItems.extend((elps, text))
 
     def drawHull(self, items: List[MaterialItem]):
