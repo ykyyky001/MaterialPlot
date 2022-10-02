@@ -208,8 +208,6 @@ class AshbyGraphicsController(object):
         prev_items = self.semanticItems.copy()
         self.clearScene()
         for item in prev_items:
-            print(item)
-            print(isinstance(item, list))
             # If it is one item, draw the corresponding ellipse.
             if isinstance(item, MaterialItem):
                 self.drawEllipse(item)
