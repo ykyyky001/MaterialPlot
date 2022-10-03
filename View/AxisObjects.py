@@ -379,7 +379,7 @@ class IndicatorLines(QGraphicsObject):
         item.setFlag(QGraphicsItem.ItemIgnoresTransformations)
         item.hide()
         # 设置刻度线的颜色:
-        self.pen = QPen(QColor(255, 0, 0, 200),0, Qt.DotLine)
+        self.pen = QPen(QColor(255, 0, 0, 200),0, Qt.DashLine)
         self.pen.setWidth(0)  # linewidth not zooming
 
         self.setZValue(400)
