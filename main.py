@@ -58,12 +58,9 @@ class MainWindow(QMainWindow):
 
     def onDefineAxes(self):
         available_columns = self.controller.model.getColumns()
-        # TODO(kaiyang): add UI to actual handle the logic of column selection.
-        self.popupAxes = setAxesPopUp(available_columns)
-        self.popupAxes.display()
-        #how to ask the setAxes window to display?
-        self.controller.updateObjectsByAxis(x_column = available_columns[0],
-                                            y_column = available_columns[1])
+        pop_up = setAxesPopUp(available_columns)
+        pop_up.exec_()
+        self.controller.updateObjectsByAxis(pop_up.returnNewXY())
 
     def onAxisStyleChanged(self, _):
         if self.ui.linearRadio.isChecked():
@@ -124,24 +121,27 @@ class MainWindow(QMainWindow):
 
 class setAxesPopUp(QDialog):
    
-    def __init__(self, column_candidates: List[str]):
+    def __init__(self, column_candidates):
         super().__init__()
         file = QFile("Axes.ui")
         file.open(QFile.ReadOnly)
         file.close()
         loader = QUiLoader()
         self.ui = loader.load(file)
-        self.ui.show()
-        self.Main = MainWindow
-        #need to populate the list from the column title, withouth the _mean/_sd
-        #no sure what the index does.... maybe helpful maybe not
         self.propList = self.columnCandidateFilter(column_candidates)
         self.ui.x_n.addItems(self.propList)
         self.ui.x_d.addItems(self.propList)
         self.ui.y_n.addItems(self.propList)
         self.ui.y_d.addItems(self.propList)
+        self.newX = None
+        self.newY = None
         self.ui.buttonBox.accepted.connect(self.passingInfo)
         self.ui.buttonBox.rejected.connect(self.close)
+
+    def exec_(self):
+        return self.ui.exec_()
+
+    #TODO(kaiyang): handle the case with no denominator and empty input. Make corresponding changes in DataModel.addProperty().
     def passingInfo(self):
         #here read users input and bring back the info of x and y axes
         #n stands for numerator, d stands for denominator
@@ -149,14 +149,14 @@ class setAxesPopUp(QDialog):
         y_n = self.ui.y_n.currentText()
         x_d = self.ui.x_d.currentText()
         y_d = self.ui.y_d.currentText()
-        self.newX = [x_n, self.ui.x_nExp.text(),x_d, self.ui.x_dExp.text()]
-        self.newY = [y_n, self.ui.y_nExp.text(),y_d, self.ui.y_dExp.text()]
-        print(self.newX)
-        print(self.newY)
-        return self.newX, self.newY 
-        
-    def display(self):
-        self.ui.show()
+        # Default handle empty exp_box to be 1.
+        self.newX = [x_n, int(self.ui.x_nExp.text()) if self.ui.x_nExp.text() else 1,
+                     x_d, int(self.ui.x_nExp.text()) if self.ui.x_nExp.text() else 1]
+        self.newY = [y_n, int(self.ui.x_nExp.text()) if self.ui.x_nExp.text() else 1,
+                     y_d, int(self.ui.x_nExp.text()) if self.ui.x_nExp.text() else 1]
+
+    def returnNewXY(self):
+        return [self.newX, self.newY]
 
     @staticmethod
     def columnCandidateFilter(candidates: List[str]):

@@ -62,20 +62,21 @@ class AshbyModel(object):
                 # Take the first row to capture descriptive features in string columns.
                 avg_series = avg_series.append(sub_df[string_columns].iloc[0].squeeze())
                 df = df.append(avg_series.to_frame().T)
-            df = self.addProperty(df)
 
         # remove na for compatibility now!
         df.dropna(inplace=True)
         return df
 
-    @staticmethod
-    def addProperty(df):
+    #TODO(team): handle more complex semantic expression.
+    def addProperty(self, new_column_info: List):
         '''
-        Manipulate to calculate additional terms from raw data.
+        Manipulate to calculate additional terms from the data. Return the name of the new term.
+        New column info is descried as [numerator, order_of_numerator, denominator, order_of_denominator].
         '''
-        df["Modulus/Density_mean"] = (df["Modulus_mean"] / df["Density"])
-        df["Modulus/Density_sd"] = (df["Modulus_sd"] / df["Density"])
-        return df
+        new_str = new_column_info[0] + '^' + str(new_column_info[1]) + '/' + new_column_info[2] + '^' + str(new_column_info[3])
+        if new_str not in self.data.columns:
+            self.data[new_str] = (self.data[new_column_info[0]] ** new_column_info[1] / self.data[new_column_info[2]] ** new_column_info[3])
+        return new_str
 
     @staticmethod
     def convertToItem(df):

@@ -136,10 +136,16 @@ class AshbyGraphicsController(object):
         items = self.model.getAllItems().values()
         self.drawHull(list(items))
 
-    def updateObjectsByAxis(self, x_column, y_column):
-        #TODO(tienan): implement this.
+    def updateObjectsByAxis(self, new_column_info: List[List]):
+        x_column_info = new_column_info[0]
+        y_column_info = new_column_info[1]
+        x_column = self.model.addProperty(x_column_info)
+        y_column = self.model.addProperty(y_column_info)
+
+        #TODO(tienan): implement the addtional logic.
         #Adjust the transformer to allow the flexibility of different x,y selection.
-        pass
+        print(x_column, x_column in self.model.getColumns())
+        print(y_column, y_column in self.model.getColumns())
 
     #
     # Private
