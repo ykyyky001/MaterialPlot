@@ -22,6 +22,7 @@ TICKS_COLOR = QColor(134, 134, 134, 255)
 TICKS_TEXT_COLOR = QColor(0, 0, 0, 255)
 # 刻度文字的字体:
 TICKS_TEXT_FONT = QFont("微软雅黑", 10)
+INDICATOR_TEXT_COLOR = QColor(50, 200, 50, 255)
 
 # 刻度线距离scene绘图面板最上方的距离
 TICKMARK_BAR_HEIGHT = 38.0
@@ -99,32 +100,66 @@ class MarkLine(QGraphicsObject):
         y = rect.bottom() - 30 / self.view_scale
         return QPointF(a, y)
 
-    def getFloorLogTick(self, v, index=0):
-        if index == 0:
-            tickindex = math.floor(v / LINEAR_TO_LOG)
-            return 10 ** tickindex
-        else:
-            pass
-    def getCeilLogTick(self, v, index=0):
-        if index == 0:
-            tickindex = math.ceil(v / LINEAR_TO_LOG)
-            return 10 ** index
+    def getLogLevel(self):
+        max, min = self.lin2log(self.axisMax) , self.lin2log(self.axisMin)
+        maxbase = math.ceil(math.log10(max))
+        minbase = math.floor(math.log10(min))
+        print(minbase, maxbase)
 
+    def _generateLogText(self, i, a):
+        # add tick texts
+        if i >= len(self._markTextItem):
+            item = QGraphicsTextItem(self)
+            item.setFont(TICKS_TEXT_FONT)
+            item.setDefaultTextColor(TICKS_TEXT_COLOR)
+            item.setZValue(0)
+            item.setRotation(self.TEXTANGLE)
+            item.setFlag(QGraphicsItem.ItemIgnoresTransformations)
+            self._markTextItem.append(item)
+        else:
+            item = self._markTextItem[i]
+        item.setPos(self.makeTextPos(self.log2lin(a)))
+        item.setPlainText(self.getMarkText(self.log2lin(a)))
+        item.show()
     def logUpdateMark(self):
-        # hide all textitem first
+        maxlog, minlog = self.lin2log(self.axisMax), self.lin2log(self.axisMin)
         for item in self._markTextItem:
             item.hide()
-
         lines = []
-        minor_lines = []
-        self._markLinesBold = lines
-        self._markLines = minor_lines
-        arange = self.axisMax - self.axisMin
-        if arange > LINEAR_TO_LOG * 5:
-            self.linearUpdateMark()
+        maxlogbase = math.log10(maxlog)
+        minlogbase = math.log10(minlog)
+        maxbase = math.ceil(maxlogbase)
+        minbase = math.floor(minlogbase)
+        div = maxbase - minbase
+        if div < 3:
+            # case2
+            minorbase = 10 ** math.floor(math.log10(maxlog - minlog))
+            divs = int((maxlog - minlog)/minorbase)
+            if divs < 2:
+                divs *= 10
+                base = minorbase * 0.1
+            else:
+                base = minorbase
+            a = math.floor(minlog / base) * base
+            i = 0
+            while a < self.axisMax:
+                # calc major ticks
+                lines.append(self.makeMajorLine(self.log2lin(a)))
+                self._generateLogText(i, a)
+                i += 1
+                a += base
         else:
-            return
-        i = 0
+            i = 0
+            for j in range(minbase, maxbase):
+                ivalue = 10 ** j
+                # calc major ticks
+                lines.append(self.makeMajorLine(self.log2lin(ivalue)))
+                self._generateLogText(i, ivalue)
+                i += 1
+
+
+        self._markLinesBold = lines
+
 
     def linearUpdateMark(self):
         arange = self.axisMax - self.axisMin
@@ -148,7 +183,7 @@ class MarkLine(QGraphicsObject):
             # calc major ticks
             lines.append(self.makeMajorLine(a))
             # calc minor ticks
-            if self._axisMode == MARKTRACK_MODE_LINEAR:
+            if self._axisMode == MARKTRACK_MODE_LINEAR or base > 1:
                 for j in range(1, MINOR_TICK_COUNT):
                     mina = a + j * base / MINOR_TICK_COUNT
                     minor_lines.append(self.makeMinorLine(mina))
@@ -181,15 +216,23 @@ class MarkLine(QGraphicsObject):
             return
         self._viewRect = rect
         try:
-            if self._axisMode == MARKTRACK_MODE_LINEAR:
-                self.linearUpdateMark()
+            arange = self.axisMax - self.axisMin
+            if self._axisMode == MARKTRACK_MODE_LOGSCALE and arange < LINEAR_TO_LOG * 2:
+                # dont paint for now
+                # self.logUpdateMark()
+                pass
             else:
-                self.logUpdateMark()
+                self.linearUpdateMark()
+
         except OverflowError:
             pass
     @staticmethod
     def lin2log(v):
         return 10 ** (v / LINEAR_TO_LOG)
+
+    @staticmethod
+    def log2lin(v):
+        return math.log10(v) * LINEAR_TO_LOG
 
     def getVisualCoord(self, logiccoord):
         if self._axisMode == MARKTRACK_MODE_LINEAR:
@@ -314,6 +357,63 @@ class VerticalMarkLine(MarkLine):
         rect = self.view.getViewRect()
         x = rect.left() + 30 / self.view_scale
         return QPointF(x, a)
+
+class Test(QGraphicsObject):
+    pass
+
+class IndicatorLines(QGraphicsObject):
+
+    def __init__(self, view):
+        super(IndicatorLines, self).__init__()
+        self.view_scale = 100.0
+        self.view = view
+        self._viewRect = None
+        self._axisMode = MARKTRACK_MODE_LOGSCALE
+        self.hoverPos = QPointF(-9999, -9999)
+        self.vline = QLineF()
+        self.hline = QLineF()
+        self.textitem = item = QGraphicsTextItem(self)
+        item.setFont(QFont("Arial", 12, 2))
+        item.setDefaultTextColor(INDICATOR_TEXT_COLOR)
+        item.setZValue(400)
+        item.setFlag(QGraphicsItem.ItemIgnoresTransformations)
+        item.hide()
+        # 设置刻度线的颜色:
+        self.pen = QPen(QColor(255, 0, 0, 200),0, Qt.DashLine)
+        self.pen.setWidth(0)  # linewidth not zooming
+
+        self.setZValue(400)
+        self.setFlags(QGraphicsItem.ItemSendsScenePositionChanges)
+
+    def setViewScale(self, scale):
+        self.view_scale = scale
+        self.onHoverChanged(self.hoverPos)
+    def boundingRect(self):
+        """交互范围."""
+        rect = self.view.getViewRect()
+        return rect
+    def setAxisMode(self, mode):
+        self._axisMode = mode
+        self.onHoverChanged(self.hoverPos)
+        self.update()
+    def onHoverChanged(self, pos):
+        rect = self.view.getViewRect()
+        self.hoverPos = pos
+        self.vline = QLineF(pos.x(), rect.top(), pos.x(), rect.bottom())
+        self.hline = QLineF(rect.left(), pos.y(), rect.right(), pos.y())
+        self.textitem.setPos(pos + QPointF(0, - 25/ self.view_scale))
+        if self._axisMode == MARKTRACK_MODE_LOGSCALE:
+
+            self.textitem.setPlainText("%g, %g" % (10 ** (pos.x()), 10 ** (pos.y())))
+        else:
+            self.textitem.setPlainText("%g, %g" % (pos.x(), pos.y()))
+        self.textitem.show()
+        self.update()
+
+    def paint(self, painter, option, widget):
+        painter.setPen(self.pen)
+        painter.drawLine(self.vline)
+        painter.drawLine(self.hline)
 
 
 class HShadowMarkLine(MarkLine):

@@ -120,8 +120,7 @@ class MainWindow(QMainWindow):
         # self.controller.drawFamilyHull()
 
 class setAxesPopUp(QDialog):
-   
-    def __init__(self, column_candidates):
+    def __init__(self, column_candidates: List[str]):
         super().__init__()
         file = QFile("Axes.ui")
         file.open(QFile.ReadOnly)
