@@ -22,6 +22,7 @@ TICKS_COLOR = QColor(134, 134, 134, 255)
 TICKS_TEXT_COLOR = QColor(0, 0, 0, 255)
 # 刻度文字的字体:
 TICKS_TEXT_FONT = QFont("微软雅黑", 10)
+INDICATOR_TEXT_COLOR = QColor(50, 200, 50, 255)
 
 # 刻度线距离scene绘图面板最上方的距离
 TICKMARK_BAR_HEIGHT = 38.0
@@ -356,6 +357,63 @@ class VerticalMarkLine(MarkLine):
         rect = self.view.getViewRect()
         x = rect.left() + 30 / self.view_scale
         return QPointF(x, a)
+
+class Test(QGraphicsObject):
+    pass
+
+class IndicatorLines(QGraphicsObject):
+
+    def __init__(self, view):
+        super(IndicatorLines, self).__init__()
+        self.view_scale = 100.0
+        self.view = view
+        self._viewRect = None
+        self._axisMode = MARKTRACK_MODE_LOGSCALE
+        self.hoverPos = QPointF(-9999, -9999)
+        self.vline = QLineF()
+        self.hline = QLineF()
+        self.textitem = item = QGraphicsTextItem(self)
+        item.setFont(QFont("Arial", 12, 2))
+        item.setDefaultTextColor(INDICATOR_TEXT_COLOR)
+        item.setZValue(400)
+        item.setFlag(QGraphicsItem.ItemIgnoresTransformations)
+        item.hide()
+        # 设置刻度线的颜色:
+        self.pen = QPen(QColor(255, 0, 0, 200),0, Qt.DotLine)
+        self.pen.setWidth(0)  # linewidth not zooming
+
+        self.setZValue(400)
+        self.setFlags(QGraphicsItem.ItemSendsScenePositionChanges)
+
+    def setViewScale(self, scale):
+        self.view_scale = scale
+        self.onHoverChanged(self.hoverPos)
+    def boundingRect(self):
+        """交互范围."""
+        rect = self.view.getViewRect()
+        return rect
+    def setAxisMode(self, mode):
+        self._axisMode = mode
+        self.onHoverChanged(self.hoverPos)
+        self.update()
+    def onHoverChanged(self, pos):
+        rect = self.view.getViewRect()
+        self.hoverPos = pos
+        self.vline = QLineF(pos.x(), rect.top(), pos.x(), rect.bottom())
+        self.hline = QLineF(rect.left(), pos.y(), rect.right(), pos.y())
+        self.textitem.setPos(pos + QPointF(0, - 25/ self.view_scale))
+        if self._axisMode == MARKTRACK_MODE_LOGSCALE:
+
+            self.textitem.setPlainText("%g, %g" % (10 ** (pos.x()), 10 ** (pos.y())))
+        else:
+            self.textitem.setPlainText("%g, %g" % (pos.x(), pos.y()))
+        self.textitem.show()
+        self.update()
+
+    def paint(self, painter, option, widget):
+        painter.setPen(self.pen)
+        painter.drawLine(self.vline)
+        painter.drawLine(self.hline)
 
 
 class HShadowMarkLine(MarkLine):

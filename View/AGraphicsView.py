@@ -3,7 +3,7 @@ import PySide2.QtGui
 from PySide2.QtWidgets import QGraphicsScene, QGraphicsView, QGraphicsTextItem
 from PySide2.QtCore import QPointF, QRectF, Qt
 from PySide2.QtGui import QTransform
-from .AxisObjects import MarkLine, VerticalMarkLine, VShadowMarkLine, HShadowMarkLine
+from .AxisObjects import MarkLine, VerticalMarkLine, VShadowMarkLine, HShadowMarkLine, IndicatorLines, Test
 import math
 
 FIT_EXPAND_MARGIN_RATIO = 0.1
@@ -22,7 +22,7 @@ class AGraphicsView(QGraphicsView):
         self.lastPos = QPointF(0, 0)
         self.setVerticalScrollBarPolicy(Qt.ScrollBarAlwaysOff)
         self.setHorizontalScrollBarPolicy(Qt.ScrollBarAlwaysOff)
-        self._hMarkline = self._vMarkline = self._hsMarkline = self._vsMarkline = None
+        self._indicator = self._hMarkline = self._vMarkline = self._hsMarkline = self._vsMarkline = None
 
         self.graphicItems = []
 
@@ -32,6 +32,7 @@ class AGraphicsView(QGraphicsView):
             self._vMarkline.setAxisMode(mode)
             self._hsMarkline.setAxisMode(mode)
             self._vsMarkline.setAxisMode(mode)
+            self._indicator.setAxisMode(mode)
             self.refreshMarks()
 
     def initHelperItems(self):
@@ -39,6 +40,9 @@ class AGraphicsView(QGraphicsView):
         self._vMarkline = VerticalMarkLine(self)
         self._hsMarkline = HShadowMarkLine(self)
         self._vsMarkline = VShadowMarkLine(self)
+        self._indicator = IndicatorLines(self)
+
+        self.scene().addItem(self._indicator)
         self.scene().addItem(self._hMarkline)
         self.scene().addItem(self._vMarkline)
         self.scene().addItem(self._hsMarkline)
@@ -65,13 +69,15 @@ class AGraphicsView(QGraphicsView):
         return self.mapToScene(self.rect()).boundingRect()
 
     def mouseMoveEvent(self, mouseEvent):
+        mousePos = QPointF(mouseEvent.pos())
         if self.dragMode() == QGraphicsView.ScrollHandDrag:
             self.rightDrag = True
-            mousePos = QPointF(mouseEvent.pos())
+
             self.viewPosInScene = self.lastViewPosInScene + (QPointF(self.lastPos) - mousePos) / self.viewScale
 
             self.resetSceneRect()
-
+        if self._indicator:
+            self._indicator.onHoverChanged(self.mapToScene(mousePos.x(), mousePos.y()))
         return super(AGraphicsView, self).mouseMoveEvent(mouseEvent)
 
     def mouseReleaseEvent(self, mouseEvent):
@@ -103,6 +109,7 @@ class AGraphicsView(QGraphicsView):
         self._vMarkline.setViewScale(self.viewScale)
         self._hsMarkline.setViewScale(self.viewScale)
         self._vsMarkline.setViewScale(self.viewScale)
+        self._indicator.setViewScale(self.viewScale)
 
         return super(AGraphicsView, self).wheelEvent(mouseEvent)
 
@@ -148,11 +155,13 @@ class AGraphicsView(QGraphicsView):
             self._vMarkline.setViewScale(self.viewScale)
             self._hsMarkline.setViewScale(self.viewScale)
             self._vsMarkline.setViewScale(self.viewScale)
+            self._indicator.setViewScale(self.viewScale)
 
             self._hMarkline.update()
             self._vMarkline.update()
             self._hsMarkline.update()
             self._vsMarkline.update()
+            self._indicator.update()
 
     def resetSceneRect(self):
         rect = self.rect()
