@@ -57,8 +57,7 @@ class MainWindow(QMainWindow):
     #
 
     def onDefineAxes(self):
-        available_columns = self.controller.model.getColumns()
-        pop_up = setAxesPopUp(available_columns)
+        pop_up = setAxesPopUp(self.controller.model.getColumns())
         pop_up.exec_()
         self.controller.updateObjectsByAxis(pop_up.returnNewXY())
 
