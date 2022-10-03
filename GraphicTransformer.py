@@ -62,16 +62,18 @@ class GraphicTransformer():
     #
     # Private
     #
-    def convertMatToSimpleEllipse(self, mat_item: MaterialItem):
+    def convertMatToSimpleEllipse(self, mat_item: MaterialItem,
+                                  x: str = "Modulus_mean", w: str = "Modulus_sd",
+                                  y: str = "Strength_mean", h: str = "Strength_sd"):
         '''
         Convert an material item to a pure geometry object.
         '''
-        upper_left_x = mat_item.x - mat_item.w / 2.
+        upper_left_x = mat_item.features[x] - mat_item.features[w] / 2.
         # Specific handling of y-coor (is a negative value) because we actually mark
         # the neg-y area on the plot as pos-y for visualization purpose.
-        upper_left_y = - mat_item.y - mat_item.h / 2.
-        width = mat_item.w
-        height = mat_item.h
+        upper_left_y = - mat_item.features[y] - mat_item.features[h] / 2.
+        width = mat_item.features[w]
+        height = mat_item.features[h]
         if self.config.log_scale:
             # The ellipse/square in log scale is defined by the log of the original four corner points.
             # Use the diff between the lower-right point and upper-left point to re-calculate

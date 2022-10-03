@@ -59,7 +59,8 @@ class MainWindow(QMainWindow):
     def onDefineAxes(self):
         pop_up = setAxesPopUp(self.controller.model.getColumns())
         pop_up.exec_()
-        self.controller.updateObjectsByAxis(pop_up.returnNewXY())
+        if pop_up.returnNewXY():
+            self.controller.updateObjectsByAxis(pop_up.returnNewXY())
 
     def onAxisStyleChanged(self, _):
         if self.ui.linearRadio.isChecked():
@@ -154,7 +155,11 @@ class setAxesPopUp(QDialog):
                      y_d, int(self.ui.x_nExp.text()) if self.ui.x_nExp.text() else 1]
 
     def returnNewXY(self):
-        return [self.newX, self.newY]
+        # Return None if the user provides no information.
+        if self.newX:
+            return [self.newX, self.newY]
+        else:
+            return None
 
     @staticmethod
     def columnCandidateFilter(candidates: List[str]):

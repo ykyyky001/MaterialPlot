@@ -9,10 +9,6 @@ class MaterialItem(object):
     """
 
     def __init__(self, data: pd.Series):
-        self.x = float(data["Modulus_mean"])
-        self.y = float(data["Strength_mean"])
-        self.w = float(data["Modulus_sd"])
-        self.h = float(data["Strength_sd"])
         self.label = data["Name"]
         self.color_r = int(data["Color_R"])
         self.color_g = int(data["Color_G"])
@@ -22,13 +18,12 @@ class MaterialItem(object):
             self.rotation = data["rotation"]
         else:
             self.rotation = 0.0
-
-    def printDebugString(self):
-        print("Load ", self.label, ": ",
-              "x ", self.x, ", y ", self.y,
-              ", w ", self.w, ", h ", self.h,
-              ", rotation ", self.rotation)
-
+        # All other features of the material are stored in a dict allowing for flexible extension.
+        self.features = {}
+        for feature in data.keys():
+            if feature in ["Name", "Color_R", "Color_G", "Color_B", "Type", "rotation"]:
+                continue
+            self.features[feature] = data[feature]
 
 class AshbyModel(object):
     def __init__(self, filename: str):
