@@ -132,7 +132,7 @@ class MarkLine(QGraphicsObject):
         div = maxbase - minbase
         if div < 3:
             # case2
-            minorbase = 10 ** math.floor(math.log10(mafxlog - minlog))
+            minorbase = 10 ** math.floor(math.log10(maxlog - minlog))
             divs = int((maxlog - minlog)/minorbase)
             if divs < 2:
                 divs *= 10
@@ -182,7 +182,7 @@ class MarkLine(QGraphicsObject):
             # calc major ticks
             lines.append(self.makeMajorLine(a))
             # calc minor ticks
-            if self._axisMode == MARKTRACK_MODE_LINEAR or base >= LINEARSCALE_UNITS:
+            if self._axisMode == MARKTRACK_MODE_LINEAR or base > 1:
                 for j in range(1, MINOR_TICK_COUNT):
                     mina = a + j * base / MINOR_TICK_COUNT
                     minor_lines.append(self.makeMinorLine(mina))
@@ -217,7 +217,9 @@ class MarkLine(QGraphicsObject):
         try:
             arange = self.axisMax - self.axisMin
             if self._axisMode == MARKTRACK_MODE_LOGSCALE and arange < LINEAR_TO_LOG * 2:
-                self.logUpdateMark()
+                # dont paint for now
+                # self.logUpdateMark()
+                pass
             else:
                 self.linearUpdateMark()
 
