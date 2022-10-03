@@ -1,4 +1,5 @@
 from math import log10
+from typing import List
 
 from PySide2.QtCore import QPointF, QRectF
 from PySide2.QtGui import QPolygonF
