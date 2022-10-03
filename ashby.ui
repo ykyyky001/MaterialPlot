@@ -6,8 +6,8 @@
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>1195</width>
-    <height>913</height>
+    <width>1327</width>
+    <height>1073</height>
    </rect>
   </property>
   <property name="windowTitle">
@@ -17,14 +17,14 @@
    <layout class="QHBoxLayout" name="horizontalLayout" stretch="1,10">
     <item>
      <layout class="QGridLayout" name="gridLayout">
-      <property name="horizontalSpacing">
-       <number>6</number>
-      </property>
       <property name="leftMargin">
        <number>0</number>
       </property>
       <property name="topMargin">
        <number>0</number>
+      </property>
+      <property name="horizontalSpacing">
+       <number>6</number>
       </property>
       <item row="10" column="0" colspan="3">
        <widget class="QPushButton" name="Plot_sel_ln">
@@ -377,6 +377,9 @@
         </widget>
        </widget>
       </item>
+      <item row="3" column="2">
+       <widget class="QComboBox" name="familyColumn"/>
+      </item>
      </layout>
     </item>
     <item>
@@ -408,8 +411,8 @@
     <rect>
      <x>0</x>
      <y>0</y>
-     <width>1195</width>
-     <height>26</height>
+     <width>1327</width>
+     <height>21</height>
     </rect>
    </property>
    <widget class="QMenu" name="menuFile">
