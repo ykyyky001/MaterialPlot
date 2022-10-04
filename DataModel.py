@@ -1,4 +1,7 @@
 # -*- coding:utf-8 -*-
+from ast import Num
+from unicodedata import numeric
+from numpy import float64
 import pandas as pd
 from typing import List
 
@@ -61,6 +64,23 @@ class AshbyModel(object):
         # remove na for compatibility now!
         df.dropna(inplace=True)
         return df
+
+    # to let the user select family catagory, copied from initFromData
+    def getStringColumn(self, filename: str):
+        if filename:
+            temp_df = pd.read_csv(filename)
+            # Find the string columns.
+            string_data = temp_df.select_dtypes(include = object)
+    #TODO(guaishow): is the text/string things in Pandas called object?
+            string_columns = string_data.columns
+        return string_columns
+
+    def getNumericColumns(self, filename: str):
+        if filename:
+            temp_df = pd.read_csv(filename)
+            numeric_data = temp_df.select_dtypes(include = float)
+            numeric_columns = numeric_data.columns
+        return numeric_columns
 
     #TODO(team): handle more complex semantic expression.
     def addProperty(self, new_column_info: List):

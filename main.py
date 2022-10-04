@@ -57,7 +57,7 @@ class MainWindow(QMainWindow):
     #
 
     def onDefineAxes(self):
-        pop_up = setAxesPopUp(self.controller.model.getColumns())
+        pop_up = setAxesPopUp(self.controller.model.getNumericColumns(self.csv_fpath))
         pop_up.exec_()
         if pop_up.returnNewXY():
             self.controller.updateObjectsByAxis(pop_up.returnNewXY())
@@ -164,8 +164,13 @@ class setAxesPopUp(QDialog):
 
     @staticmethod
     def columnCandidateFilter(candidates: List[str]):
-        #TODO(ky): do something here.
-        return candidates
+        updatedcandidates = []
+        for candidate in candidates:
+            simcandidate = candidate.split("_")[0]
+            if simcandidate not in updatedcandidates:
+                if simcandidate.lower() != "color":
+                    updatedcandidates.append(simcandidate)
+        return updatedcandidates
 
 if __name__ == '__main__':
     app = QApplication(sys.argv)
