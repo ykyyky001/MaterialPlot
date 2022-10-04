@@ -117,7 +117,8 @@ class MainWindow(QMainWindow):
 
     def onActionConvexHull(self):
         self.controller.drawAllHull()
-        # self.controller.drawFamilyHull()
+        #TODO(tn/ky): revise the UI to fulfill the actual interaction.
+        self.controller.drawFamilyHull()
 
 class setAxesPopUp(QDialog):
     def __init__(self, column_candidates: List[str]):

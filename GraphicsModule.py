@@ -45,10 +45,9 @@ class AshbyGraphicsController(object):
 
     def drawFamilyHull(self):
         family_candidates = self.model.provideFamilyCandidateByColumn("Type")
-        # TODO(team): implement the actual selection logic.
-        selected_family = family_candidates[0]
-        items = self.model.getItemsByFamily("Type", selected_family).values()
-        self.drawHull(list(items))
+        for family in family_candidates:
+            items = self.model.getItemsByFamily("Type", family).values()
+            self.drawHull(list(items))
 
     def drawAllHull(self):
         items = self.model.getAllItems().values()
